@@ -17,7 +17,7 @@ let cloudSize = [0, 25];
 let cloudPos = [-100, 0];
 let cloudRoll = [20,0];
 let cloudSpeed = 0.5;
-let cloudCount = 50;
+let cloudCount = 500;
 
 
 function setup() {
@@ -90,7 +90,7 @@ function clouds() {
 function setClouds(){
   for(let i = 0; i < cloudCount; ++i){
     let positionMap = new Map();
-    positionMap.set('angle', 0);
+    positionMap.set('angle', 360 - Math.floor(Math.random() * (360 - 0 + 1)));
     let min = w;
     let max = -w;
     positionMap.set('cloudX', max - Math.floor(Math.random() * (max - min + 1)));
