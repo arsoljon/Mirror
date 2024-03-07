@@ -13,11 +13,12 @@ let x1 = 0;
 let y1 = 0;
 let x2 = 150;
 let y2 = 150;
-let cloudSize = [0, 25];
+let cloudSize = [1, 20];
 let cloudPos = [-100, 0];
 let cloudRoll = [20,0];
-let cloudSpeed = 0.5;
-let cloudCount = 50;
+//let cloudSpeed = 2;
+let cloudCount =2000;
+let cloudOffset = 0;
 
 
 function setup() {
@@ -29,7 +30,8 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  //noStroke();
+  background(0,220);
   sky();
   ground();
   rain();
@@ -62,16 +64,29 @@ function clouds() {
     let cloudPosX = positionMap.get('cloudX');
     let cloudPosY = positionMap.get('cloudY');
     let angle = positionMap.get('angle');
+    let sw = positionMap.get('strokeWeight');
+    let off = positionMap.get('offset');
+    let cloudSpeed = positionMap.get('speed');
+    let r = positionMap.get('redRange');
+    let g  = positionMap.get('greenRange');
+    let b = positionMap.get('blueRange');
     push();
+    //strokeWeight changes thickness of lines and stroke change color from black to white
+    strokeWeight(sw);
+    stroke(500);
     translate(cloudPosX, cloudPosY)
-    if(cloudPosX > w+w/4){
+    if(cloudPosX > w + w/6){
+      cloudPosX = cloudRespawn(i);
       //cloud is at its endpoint
-      let min = -w/4;
-      let max = -w;
-      cloudPosX = max - Math.floor(Math.random() * (max - min + 1));
+      //cloudOffset = 0;
     }
     cloudPosX += cloudSpeed;
     rotate(-angle);
+    let strengthFill = 255;
+    let strengthStroke = 255;
+    //noStroke();
+    //colorMode(HSB);
+    fill(r,g,b);
     rect(cloudRoll[0],cloudRoll[1],cloudSize[0],cloudSize[1]);
     pop();
     angle += 1;
@@ -83,19 +98,66 @@ function clouds() {
     positionMap.set('angle', angle);
     cloudMap.set(i, positionMap);
   }
-  
 
 }
 
+function cloudRespawn(i){
+  let positionMap = cloudMap.get(i);
+  let xRange = positionMap.get('xRange');
+  let off = positionMap.get('offset');
+  let max = 0 - xRange[1];
+  let min = 0 - xRange[0];
+  let posX = map(noise(off), 0,1,0, min, max)
+  return posX;
+}
 function setClouds(){
   for(let i = 0; i < cloudCount; ++i){
     let positionMap = new Map();
-    positionMap.set('angle', 0);
-    let min = w;
-    let max = -w;
-    positionMap.set('cloudX', max - Math.floor(Math.random() * (max - min + 1)));
-    positionMap.set('cloudY', 0)
+    //create a Cluster
+    let min = 1;
+    let max = 100;
+    positionMap.set('offset', max - Math.floor(Math.random() * (max - min + 1)));
+    let off = positionMap.get('offset');
+    positionMap.set('maxCluster', 10);
+    let clusterSize = positionMap.get('maxCluster');
+    positionMap.set('clusterID', Math.floor(random(clusterSize)));   //clusterID represents the specific cluster of clouds this cloud will be with.
+
+    let id = positionMap.get('clusterID');
+    let maxClusters = positionMap.get('maxCluster');
+    min = id * (w/maxClusters);
+    max = (id + 1) * (w/maxClusters);
+    let xRange = [min, max];     //xRange represent the x parameters for a cloud spawn
+    positionMap.set('xRange', xRange);
+    min = 80;
+    max = 90;
+    let redRange = Math.floor(map(noise(off), 0,1, min, max));
+    min = 106;
+    max = 130;
+    let blueRange = Math.floor(map(noise(off), 0,1, min, max))
+    min = 117;
+    max = 150;
+    let greenRange = Math.floor(map(noise(off), 0,1, min, max))
+    console.log(blueRange);
+    positionMap.set('speed', (id+1)*.1);
+    positionMap.set('color', [redRange, blueRange, greenRange]);
+
+    positionMap.set('angle', 360 - Math.floor(Math.random() * (360 - 0 + 1)));
+    min = 0;
+    max = w;
+    //positionMap.set('cloudX', max - Math.floor(Math.random() * (max - min + 1)));
+    positionMap.set('cloudX', map(noise(off), 0,1,0, min, max));
+    min = 50;
+    max = 200;
+    //positionMap.set('cloudY', max - Math.floor(Math.random() * (max - min + 1)));
+    positionMap.set('cloudY', map(noise(off), 0,1,0, min, max));
+    min = 1
+    max = 1000
+    positionMap.set('strokeWeight', .5 * map(noise(off), 0,1,0, min, max))
+    min = 0;
+    max = 10;
     cloudMap.set(i, positionMap);
+    //every ID represent a range a cloud line is allowed to be in. 
+    //This should create a cluster of lines ressembling a cloud.
   }
 }
 
