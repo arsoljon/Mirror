@@ -20,12 +20,15 @@ let cloudRoll = [20,0];
 let cloudCount =2000;
 let cloudOffset = 0;
 
+let allLimbs = new Map();
+
 
 function setup() {
   createCanvas(w, h);
   angleMode(DEGREES);
   setRain();
   setClouds();
+  setLimbs();
   //frameRate(5)
 }
 
@@ -36,6 +39,22 @@ function draw() {
   ground();
   rain();
   clouds();
+  let headLoc = [138,100];
+  push();
+  translate(100,100);
+  fill('white')
+  rect(0,0,100,100);
+  pop();
+  push();
+  translate(headLoc[0],headLoc[1]);
+  fill('purple');
+  rect(0,0,25,25);
+  pop();
+  push();
+  translate(headLoc[0]-5,headLoc[1]+25);
+  rect(0,0,35,35);
+  pop();
+  jointBend();
 }
 
 function sky() {
@@ -221,4 +240,23 @@ function setRain(){
 
 function person(){
 
+}
+
+function setLimbs(){
+  let change = 0.5;
+  let range = [0,75];
+  let shape = [50,180];
+  let angle = 0;
+  let legPosition = [width/3,height/3]
+  push();
+  //head has one joint connected to torso
+
+  //torso has 5 joints connected to head, right leg and arm,  left leg and arm.
+  //one arm has 2 limbs. the top arm has 2 joints, the forearm has one joint.
+  //one leg has 2 limbs. the top leg has 2 joints, the shin has one joint.  
+  pop();
+}
+
+function jointBend(){
+  //each limb has a joint with a specific range of motion. 
 }
