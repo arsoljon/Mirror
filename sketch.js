@@ -189,17 +189,23 @@ function template(){
 }
 function sky() {
   //sky should be 3/4th the size of screen
+  push();
   fill('#6daebe');
   rect(0, 0, w,skyY2);
+  pop();
 }
 
 function ground() {
   //ground should be 1/4th the size of screen
+  push();
   fill('#ab7b66');
   rect(0, groundY1, w,groundY2);
+  pop();
 }
 
 function clouds() {
+  push();
+  fill('gray');
   //clouds should be represented by lines 
   //straight lines will follow a circular path  
   //A line will rotate
@@ -247,7 +253,7 @@ function clouds() {
     positionMap.set('angle', angle);
     cloudMap.set(i, positionMap);
   }
-
+  pop();
 }
 
 function cloudRespawn(i){
