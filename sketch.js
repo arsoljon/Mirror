@@ -39,24 +39,154 @@ function draw() {
   ground();
   rain();
   clouds();
+  //template();
+  roughPerson();
+  jointBend();
+}
+
+function roughPerson(){
+  push();
+  ellipseMode(CORNER);
+  //noStroke();
+  fill('white');
   let headLoc = [138,100];
+  let torsoLoc = [headLoc[0]+7,headLoc[1]+20];
+  let leftArmLoc = [headLoc[0]+5,headLoc[1]+25];
+  let rightArmLoc = [headLoc[0]+14,headLoc[1]+25];
+  let leftLegLoc = [headLoc[0]+7,headLoc[1]+(headLoc[1]/2)+5];
+  let rightLegLoc =[headLoc[0]+12,headLoc[1]+(headLoc[1]/2)+5];
+  let headSize = [25,25];
+  let torsoSize = [10,45];
+  let leftArmSize = [5,40];
+  let rightArmSize = leftArmSize;
+  let leftLegSize = [5,35];
+  let rightLegSize = leftLegSize;
+  //limbs
+  let armLimbSize = [leftArmSize[0],leftArmSize[1]/2]
+  let legLimbSize = [leftLegSize[0],leftLegSize[1]/2]
+
+  //torso
+  push();
+  translate(torsoLoc[0],torsoLoc[1]);
+  ellipse(0,0,torsoSize[0],torsoSize[1]);
+  pop();  //head
+  push();
+  translate(headLoc[0],headLoc[1]);
+  ellipse(0,0,headSize[0],headSize[1]);
+  pop();
+  //left arm
+  //1
+  push();
+  translate(leftArmLoc[0],leftArmLoc[1]);
+  ellipse(0,0,armLimbSize[0],armLimbSize[1])
+  pop();
+  //2
+  push();
+  translate(leftArmLoc[0],leftArmLoc[1] + armLimbSize[1]-8);
+  ellipse(0,0,armLimbSize[0],armLimbSize[1])
+  pop();
+  //right arm
+  //1
+  push();
+  translate(rightArmLoc[0],rightArmLoc[1]);
+  ellipse(0,0,armLimbSize[0],armLimbSize[1]);
+  pop();
+  //2
+  push();
+  translate(rightArmLoc[0],rightArmLoc[1]+ armLimbSize[1]-8);
+  ellipse(0,0,armLimbSize[0],armLimbSize[1]);
+  pop();
+  //left leg
+  push();
+  fill('white')
+  translate(leftLegLoc[0],leftLegLoc[1]);
+  ellipse(0,0,leftLegSize[0],leftLegSize[1]);
+  pop();
+  //1
+  push();
+  translate(leftLegLoc[0],leftLegLoc[1]);
+  ellipse(0,0,legLimbSize[0],legLimbSize[1]);
+  pop();
+  //2
+  push();
+  translate(leftLegLoc[0],leftLegLoc[1] + legLimbSize[1]);
+  ellipse(0,0,legLimbSize[0],legLimbSize[1]);
+  pop();
+
+  //right leg
+  push();
+  fill('white')
+  translate(rightLegLoc[0],rightLegLoc[1]);
+  ellipse(0,0,rightLegSize[0],rightLegSize[1]);
+  pop();
+  //1
+  push();
+  translate(rightLegLoc[0],rightLegLoc[1]);
+  ellipse(0,0,legLimbSize[0],legLimbSize[1]);
+  pop();
+  //2
+  push();
+  translate(rightLegLoc[0],rightLegLoc[1]+legLimbSize[1]);
+  ellipse(0,0,legLimbSize[0],legLimbSize[1]);
+  pop();
+  pop();
+}
+function template(){
+  let headLoc = [138,100];
+  let torsoLoc = [headLoc[0]+7,headLoc[1]+25];
+  let leftArmLoc = [headLoc[0]+2,headLoc[1]+25];
+  let rightArmLoc = [headLoc[0]+17,headLoc[1]+25];
+  let leftLegLoc = [headLoc[0]+7,headLoc[1]+(headLoc[1]/2)+10];
+  let rightLegLoc =[headLoc[0]+12,headLoc[1]+(headLoc[1]/2)+10];
+  let headSize = [25,25];
+  let torsoSize = [10,35];
+  let leftArmSize = [5,40];
+  let rightArmSize = leftArmSize;
+  let leftLegSize = [5,35];
+  let rightLegSize = leftLegSize;
+
+  //size template
   push();
   translate(100,100);
   fill('white')
   rect(0,0,100,100);
   pop();
+  //head
   push();
   translate(headLoc[0],headLoc[1]);
   fill('purple');
-  rect(0,0,25,25);
+  rect(0,0,headSize[0],headSize[1]);
   pop();
+  //torso
   push();
-  translate(headLoc[0]-5,headLoc[1]+25);
-  rect(0,0,35,35);
+  translate(torsoLoc[0],torsoLoc[1]);
+  rect(0,0,torsoSize[0],torsoSize[1]);
   pop();
-  jointBend();
+  //left arm
+  push();
+  fill('gold')
+  translate(leftArmLoc[0],leftArmLoc[1]);
+  rect(0,0,leftArmSize[0],leftArmSize[1]);
+  pop();
+  //right arm
+  push();
+  fill('gold')
+  translate(rightArmLoc[0],rightArmLoc[1]);
+  rect(0,0,rightArmSize[0],rightArmSize[1]);
+  pop();
+  //left leg
+  push();
+  fill('white')
+  translate(leftLegLoc[0],leftLegLoc[1]);
+  rect(0,0,leftLegSize[0],leftLegSize[1]);
+  pop();
+  //right leg
+  push();
+  fill('white')
+  translate(rightLegLoc[0],rightLegLoc[1]);
+  rect(0,0,rightLegSize[0],rightLegSize[1]);
+  pop();
 }
-
 function sky() {
   //sky should be 3/4th the size of screen
   fill('#6daebe');
