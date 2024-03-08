@@ -39,15 +39,38 @@ function draw() {
 }
 
 function sky() {
+  push();
   //sky should be 3/4th the size of screen
+  noStroke();
   fill('#6daebe');
   rect(0, 0, w,skyY2);
+  pop();
 }
 
+let groundChange = 0;
+let countdown = 10;
+//let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+let countDownDate = new Date().getTime();
 function ground() {
+  push();
+  noStroke();
   //ground should be 1/4th the size of screen
   fill('#ab7b66');
-  rect(0, groundY1, w,groundY2);
+  let min = 1;
+  let max = 2;
+  let offset = max - Math.floor(Math.random() * (max - min + 1));
+  groundChange = Math.floor(map(noise(offset),0,1,0,10))
+  //rect(0, groundY1, w,groundY2);
+  translate(0,groundY1);
+  translate(30,10);
+  angleMode(DEGREES)
+  rotate(groundChange);
+  //let now = new Date().getTime();
+    // Find the distance between now and the count down date
+  //let distance = countDownDate - now;
+  //if (1 second passed )
+  rect(0, 0, w,groundY2);
+  pop();
 }
 
 function clouds() {
