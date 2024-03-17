@@ -17,7 +17,7 @@ let cloudSize = [1, 20];
 let cloudPos = [-100, 0];
 let cloudRoll = [20,0];
 //let cloudSpeed = 2;
-let cloudCount =2000;
+let cloudCount =250;
 let cloudOffset = 0;
 
 let allLimbs = new Map();
@@ -236,10 +236,11 @@ function clouds() {
   //repeat for all other clouds.
   //General: cloudSpeed, cloudRoll, cloudSize
   //Specific: cloudPos, angle, 
+  let history = [];
   for(let i = 0; i < cloudCount; ++i){
     let positionMap = cloudMap.get(i);
-    let cloudPosX = positionMap.get('cloudX');
-    let cloudPosY = positionMap.get('cloudY');
+    let x = positionMap.get('cloudX');
+    let y = positionMap.get('cloudY');
     let angle = positionMap.get('angle');
     let sw = positionMap.get('strokeWeight');
     let off = positionMap.get('offset');
@@ -247,17 +248,24 @@ function clouds() {
     let r = positionMap.get('redRange');
     let g  = positionMap.get('greenRange');
     let b = positionMap.get('blueRange');
+    let v = createVector(x,y);
+    history.push(v);
+    let maxCopies = 5;
+    if(history.length > maxCopies){
+      history.splice(0,1);
+    }
     push();
     //strokeWeight changes thickness of lines and stroke change color from black to white
+    fill('gray');
     strokeWeight(sw);
     stroke(500);
-    translate(cloudPosX, cloudPosY)
-    if(cloudPosX > w + w/6){
-      cloudPosX = cloudRespawn(i);
+    translate(x, y)
+    if(x > w + w/6){
+      x = cloudRespawn(i);
       //cloud is at its endpoint
       //cloudOffset = 0;
     }
-    cloudPosX += cloudSpeed;
+    x += cloudSpeed;
     rotate(-angle);
     let strengthFill = 255;
     let strengthStroke = 255;
@@ -265,13 +273,17 @@ function clouds() {
     //colorMode(HSB);
     fill(r,g,b);
     rect(cloudRoll[0],cloudRoll[1],cloudSize[0],cloudSize[1]);
+    //add trail to the clouds
+    for(let i = 0; i < history.length; ++i){
+      rect(cloudRoll[0]-i*5,cloudRoll[1]-i*1,cloudSize[0],cloudSize[1]);
+    }
     pop();
     angle += 1;
     if(angle > 360){
       //improbable of reaching but want to avoid overflow. 
       angle = 0;
     }
-    positionMap.set('cloudX', cloudPosX);
+    positionMap.set('cloudX', x);
     positionMap.set('angle', angle);
     cloudMap.set(i, positionMap);
   }
