@@ -1,12 +1,16 @@
 let w = 450;
 let h = 300;
+//ground
 let groundY1 = h-(h/4);
 let groundY2 = h/4;
+//sky
 let skyY2 = h-(h/4);
 const sizediff = 5;
+//rain
 let rainSpeed = 3;
 let rainMap = new Map();
 const rainDropCount = 400;
+//cloud
 let cloudMap = new Map();
 let angle = 0;
 let x1 = 0;
@@ -19,9 +23,13 @@ let cloudRoll = [20,0];
 //let cloudSpeed = 2;
 let cloudCount =250;
 let cloudOffset = 0;
-
+//
 let allLimbs = new Map();
-
+let limbAngle1 = 0.0;
+let limbAngle2 = 0.0;
+let range1 = [0,45];
+let range2 = [0,45];
+let change1 = 0.5;
 
 function setup() {
   createCanvas(w, h);
@@ -33,7 +41,6 @@ function setup() {
 }
 
 function draw() {
-  //noStroke();
   background(0,220);
   sky();
   ground();
@@ -46,36 +53,94 @@ function draw() {
   jointBend();
 }
 
+
+let segLength = 50;
+let currentPoint = 75;
+let lineChange = 1;
+let x3 = w / 2;
+let y3 = h/2; 
+let x4 = x3;
+let y4 = y3;
+
 function waveHand(){
   //manipulate left arm to wave back and forth
+  //change the coords for the left hand
+  //get arm to move up.
+  dragSegment(0, mouseX, mouseY);
+//  for (let i = 0; i < x.length - 1; i++) {
+//    dragSegment(i + 1, x[i], y[i]);
+//  }
+  
+  currentPoint += lineChange;
+  if(currentPoint > 100 || currentPoint < 50){
+    lineChange = -lineChange
+  }
+  //let rotation = allLimbs.get('leftArmRotation');
+  //rotation += change1;
+  //allLimbs.set('leftArmRotation', rotation);
+}
 
+function dragSegment(i, xin, yin){
+  dx = xin - x3;
+  dy = yin - y3;
+  let angle1 = atan2(dy, dx);
+
+  tx = xin - cos(angle1) * segLength;
+  ty = yin - sin(angle1) * segLength;
+  dx = tx - x4;
+  dy = ty - y4;
+  let angle2 = atan2(dy, dx);
+  x3 = x4 + cos(angle2) * segLength;
+  y3 = y4 + sin(angle2) * segLength;
+
+  segment(x3, y3, angle1);
+  segment(x4, y4, angle2);
+}
+
+function segment(x,y,a){
+  push();
+  translate(x,y);
+  rotate(a);
+  line(0,0,segLength,0);
+  pop();
 }
 
 function makeArms(){
+  push();
+  strokeWeight(5.0);
+  stroke(255, 255);
   let leftLoc = allLimbs.get('leftArmLoc');
   let rightLoc = allLimbs.get('rightArmLoc');
   let leftSize = allLimbs.get('leftArmSize');
   let rightSize = allLimbs.get('rightArmSize');
+  let leftRotation = allLimbs.get('leftArmRotation');
   makeArm(leftLoc, leftSize);
   makeArm(rightLoc, rightSize);
+  pop();
 }
 
 function makeLegs(){
+  push();
+  strokeWeight(5.0);
+  stroke(255, 255);
   let leftLoc = allLimbs.get('leftLegLoc');
   let rightLoc = allLimbs.get('rightLegLoc');
   let leftSize = allLimbs.get('leftLegSize');
   let rightSize = allLimbs.get('rightLegSize');  
   makeArm(leftLoc, leftSize);
   makeArm(rightLoc, rightSize);
+  pop();
 }
-function makeArm(armLocation, limbSize){
+function makeArm(armLocation, limbSize, rotation = 0){
     //1
     push();
+    //rotate(rotation);
     translate(armLocation[0],armLocation[1]);
-    ellipse(0,0,limbSize[0],limbSize[1])
+    line(0,0,limbSize[0],limbSize[1])
     pop();
     //2
     push();
+    rotate(rotation);
     translate(armLocation[0],armLocation[1] + limbSize[1]);
     ellipse(0,0,limbSize[0],limbSize[1])
     pop();
@@ -114,8 +179,8 @@ function makeTorso(){
 
 function roughPerson(){
   push();
+  noStroke();
   ellipseMode(CORNER);
-  //noStroke();
   fill('white');
   let headLoc = [138,100];
   let torsoLoc = [headLoc[0]+7,headLoc[1]+20];
@@ -125,18 +190,18 @@ function roughPerson(){
   let rightLegLoc =[headLoc[0]+12,headLoc[1]+(headLoc[1]/2)+5];
   let headSize = [25,25];
   let torsoSize = [10,45];
-  let leftArmSize = [5,20];
+  let leftArmSize = [0,20];
   let rightArmSize = leftArmSize;
-  let leftLegSize = [5,20];
+  let leftLegSize = [0,20];
   let rightLegSize = leftLegSize;
 
 
   allLimbs.set('headLoc', [138,100]);
   allLimbs.set('torsoLoc', [headLoc[0]+7,headLoc[1]+20]);
-  allLimbs.set('leftArmLoc',[headLoc[0]+5,headLoc[1]+25]);
-  allLimbs.set('rightArmLoc', [headLoc[0]+14,headLoc[1]+25]);
-  allLimbs.set('leftLegLoc', [headLoc[0]+7,headLoc[1]+(headLoc[1]/2)+5]);
-  allLimbs.set('rightLegLoc', [headLoc[0]+12,headLoc[1]+(headLoc[1]/2)+5]);
+  allLimbs.set('leftArmLoc',[headLoc[0]+7,headLoc[1]+27]);
+  allLimbs.set('rightArmLoc', [headLoc[0]+17,headLoc[1]+27]);
+  allLimbs.set('leftLegLoc', [headLoc[0]+9,headLoc[1]+(headLoc[1]/2)+5]);
+  allLimbs.set('rightLegLoc', [headLoc[0]+15,headLoc[1]+(headLoc[1]/2)+5]);
   allLimbs.set('headSize', [25,25]);
   allLimbs.set('torsoSize',[10,45]);
   allLimbs.set('leftArmSize', [leftArmSize[0],leftArmSize[1]]);
@@ -144,7 +209,7 @@ function roughPerson(){
   allLimbs.set('leftLegSize', leftLegSize);
   allLimbs.set('rightLegSize', rightLegSize);
   allLimbs.set('legLimbSize',[leftLegSize[0],leftLegSize[1]/2]);
-
+  allLimbs.set('leftArmRotation',0);
 
   makeTorso();
   makeHead();
@@ -152,7 +217,7 @@ function roughPerson(){
   makeArms();
   pop();
 }
-
+/*
 function template(){
   let headLoc = [138,100];
   let torsoLoc = [headLoc[0]+7,headLoc[1]+25];
@@ -209,6 +274,7 @@ function template(){
   rect(0,0,rightLegSize[0],rightLegSize[1]);
   pop();
 }
+*/
 function sky() {
   //sky should be 3/4th the size of screen
   push();
@@ -417,7 +483,7 @@ function setLimbs(){
   let range = [0,75];
   let shape = [50,180];
   let angle = 0;
-  let legPosition = [width/3,height/3]
+  let legPosition = [w/3,h/3]
   push();
   //head has one joint connected to torso
 
