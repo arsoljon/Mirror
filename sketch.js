@@ -106,6 +106,7 @@ function segment(x,y,a){
 }
 
 function makeArms(){
+  //apply a general arm rotation to both arms. Recenter the axis point at leftLoc point
   push();
   strokeWeight(5.0);
   stroke(255, 255);
@@ -131,17 +132,20 @@ function makeLegs(){
   makeArm(rightLoc, rightSize);
   pop();
 }
-function makeArm(armLocation, limbSize, rotation = 0){
+function makeArm(armLocation, limbSize, rotation = 0, adjustSize = 2){
+    //adjustSize: should not be 0, and the smaller you want the limb, the bigger the number
+    //if 1 rotates, the starting positions to the 2 limb needs to change. 
     //1
     push();
-    //rotate(rotation);
     translate(armLocation[0],armLocation[1]);
-    line(0,0,limbSize[0],limbSize[1])
+    rotate(rotation);
+    line(0,0,limbSize[0],limbSize[1]/adjustSize)
     pop();
     //2
     push();
+
+    translate(armLocation[0],armLocation[1] + limbSize[1]/adjustSize);
     rotate(rotation);
-    translate(armLocation[0],armLocation[1] + limbSize[1]);
     ellipse(0,0,limbSize[0],limbSize[1])
     pop();
 }
@@ -178,6 +182,7 @@ function makeTorso(){
 }
 
 function roughPerson(){
+  //roation value should always update in the rough person method. 
   push();
   noStroke();
   ellipseMode(CORNER);
