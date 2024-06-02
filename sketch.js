@@ -31,6 +31,9 @@ let range1 = [0,45];
 let range2 = [0,45];
 let change1 = 0.5;
 
+let speedRotation = 1;
+let armRotation = 0;
+
 function setup() {
   createCanvas(w, h);
   angleMode(DEGREES);
@@ -50,7 +53,6 @@ function draw() {
   waveHand();
   //walk
   roughPerson();
-  jointBend();
 }
 
 
@@ -138,14 +140,14 @@ function makeArm(armLocation, limbSize, rotation = 0, adjustSize = 2){
     //1
     push();
     translate(armLocation[0],armLocation[1]);
-    rotate(rotation);
+    //rotate(armRotation);
     line(0,0,limbSize[0],limbSize[1]/adjustSize)
     pop();
     //2
     push();
 
     translate(armLocation[0],armLocation[1] + limbSize[1]/adjustSize);
-    rotate(rotation);
+    rotate(armRotation);
     ellipse(0,0,limbSize[0],limbSize[1])
     pop();
 }
@@ -187,35 +189,8 @@ function roughPerson(){
   noStroke();
   ellipseMode(CORNER);
   fill('white');
-  let headLoc = [138,100];
-  let torsoLoc = [headLoc[0]+7,headLoc[1]+20];
-  let leftArmLoc = [headLoc[0]+5,headLoc[1]+25];
-  let rightArmLoc = [headLoc[0]+14,headLoc[1]+25];
-  let leftLegLoc = [headLoc[0]+7,headLoc[1]+(headLoc[1]/2)+5];
-  let rightLegLoc =[headLoc[0]+12,headLoc[1]+(headLoc[1]/2)+5];
-  let headSize = [25,25];
-  let torsoSize = [10,45];
-  let leftArmSize = [0,20];
-  let rightArmSize = leftArmSize;
-  let leftLegSize = [0,20];
-  let rightLegSize = leftLegSize;
 
-
-  allLimbs.set('headLoc', [138,100]);
-  allLimbs.set('torsoLoc', [headLoc[0]+7,headLoc[1]+20]);
-  allLimbs.set('leftArmLoc',[headLoc[0]+7,headLoc[1]+27]);
-  allLimbs.set('rightArmLoc', [headLoc[0]+17,headLoc[1]+27]);
-  allLimbs.set('leftLegLoc', [headLoc[0]+9,headLoc[1]+(headLoc[1]/2)+5]);
-  allLimbs.set('rightLegLoc', [headLoc[0]+15,headLoc[1]+(headLoc[1]/2)+5]);
-  allLimbs.set('headSize', [25,25]);
-  allLimbs.set('torsoSize',[10,45]);
-  allLimbs.set('leftArmSize', [leftArmSize[0],leftArmSize[1]]);
-  allLimbs.set('rightArmSize',[rightArmSize[0],rightArmSize[1]]);
-  allLimbs.set('leftLegSize', leftLegSize);
-  allLimbs.set('rightLegSize', rightLegSize);
-  allLimbs.set('legLimbSize',[leftLegSize[0],leftLegSize[1]/2]);
-  allLimbs.set('leftArmRotation',0);
-
+  jointBend();
   makeTorso();
   makeHead();
   makeLegs();
@@ -495,9 +470,30 @@ function setLimbs(){
   //torso has 5 joints connected to head, right leg and arm,  left leg and arm.
   //one arm has 2 limbs. the top arm has 2 joints, the forearm has one joint.
   //one leg has 2 limbs. the top leg has 2 joints, the shin has one joint.  
+  let headLoc = [138,100];
+  allLimbs.set('headLoc', [138,100]);
+  allLimbs.set('torsoLoc', [headLoc[0]+7,headLoc[1]+20]);
+  allLimbs.set('leftArmLoc',[headLoc[0]+7,headLoc[1]+27]);
+  allLimbs.set('rightArmLoc', [headLoc[0]+17,headLoc[1]+27]);
+  allLimbs.set('leftLegLoc', [headLoc[0]+9,headLoc[1]+(headLoc[1]/2)+5]);
+  allLimbs.set('rightLegLoc', [headLoc[0]+15,headLoc[1]+(headLoc[1]/2)+5]);
+  allLimbs.set('headSize', [25,25]);
+  allLimbs.set('torsoSize',[10,45]);
+  allLimbs.set('leftArmSize', [0,20]);
+  allLimbs.set('rightArmSize',[0,20]);
+  allLimbs.set('leftLegSize', [0,20]);
+  allLimbs.set('rightLegSize', [0,20]);
+  allLimbs.set('legLimbSize',[0,20/2]);
+  allLimbs.set('leftArmRotation',0);
   pop();
 }
 
 function jointBend(){
   //each limb has a joint with a specific range of motion. 
+
+  //arms
+  if (armRotation > 50 || armRotation < -50){
+    speedRotation *= -1;
+  }
+  armRotation += speedRotation;
 }
