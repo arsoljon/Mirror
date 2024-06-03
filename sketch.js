@@ -33,6 +33,7 @@ let change1 = 0.5;
 
 let speedRotation = 1;
 let armRotation = 0;
+let scene = 0;
 
 function setup() {
   createCanvas(w, h);
@@ -189,13 +190,43 @@ function roughPerson(){
   noStroke();
   ellipseMode(CORNER);
   fill('white');
+  //the person will be moving according to the speed of a song. So different set of movements for 
+  //different parts of the song. 
+  //for debugging, utilize a onPress method with the spacebar to cycle through the movements. 
+  //There is a 1st walk, 2nd walk, pause looking up, pause looking down, free fall, etc.
+  //using the scene variable to go through various scenes, increment scene each time a 
+  //  button is pressed. if scene > 5 reset to 0. all scenes will move except for 0, freezing at last movement of scene 5.
 
-  jointBend();
+  if(scene == 1){
+    jointBend()
+  }
+  else if(scene == 2){
+    jointBend()
+  }else if(scene == 3){
+    jointBend()
+  }else if(scene == 4){
+    jointBend()
+  }else if(scene == 5){
+    jointBend()
+  }
+  
+  
+  
+  
+
+  //jointBend();
   makeTorso();
   makeHead();
   makeLegs();
   makeArms();
   pop();
+}
+
+function mousePressed(){
+  scene += 1;
+  if (scene > 1){
+    scene = 0;
+  }
 }
 /*
 function template(){
