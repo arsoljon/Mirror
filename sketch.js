@@ -34,6 +34,8 @@ let change1 = 0.5;
 let speedRotation = 1;
 let armRotation = 0;
 let scene = 0;
+let sceneSetup = [false,false,false,false,false];
+let defaultLimbs;
 
 function setup() {
   createCanvas(w, h);
@@ -51,7 +53,7 @@ function draw() {
   rain();
   clouds();
   //template();
-  waveHand();
+  moveLine();
   //walk
   roughPerson();
 }
@@ -65,7 +67,7 @@ let y3 = h/2;
 let x4 = x3;
 let y4 = y3;
 
-function waveHand(){
+function moveLine(){
   //manipulate left arm to wave back and forth
   //change the coords for the left hand
   //get arm to move up.
@@ -131,10 +133,13 @@ function makeLegs(){
   let rightLoc = allLimbs.get('rightLegLoc');
   let leftSize = allLimbs.get('leftLegSize');
   let rightSize = allLimbs.get('rightLegSize');  
-  makeArm(leftLoc, leftSize);
-  makeArm(rightLoc, rightSize);
+  let leftRotation = allLimbs.get('leftLegRotation');
+  let rightRotation = allLimbs.get('rightLegRotation');
+  makeLeg(leftLoc, leftSize, leftRotation);
+  makeLeg(rightLoc, rightSize, rightRotation);
   pop();
 }
+
 function makeArm(armLocation, limbSize, rotation = 0, adjustSize = 2){
     //adjustSize: should not be 0, and the smaller you want the limb, the bigger the number
     //if 1 rotates, the starting positions to the 2 limb needs to change. 
@@ -148,21 +153,23 @@ function makeArm(armLocation, limbSize, rotation = 0, adjustSize = 2){
     push();
 
     translate(armLocation[0],armLocation[1] + limbSize[1]/adjustSize);
-    rotate(armRotation);
+    //rotate(armRotation);
     ellipse(0,0,limbSize[0],limbSize[1])
     pop();
 }
 
-function makeLeg(legLocation, limbSize){
+function makeLeg(legLocation, limbSize, rotation){
     //1
     push();
     translate(legLocation[0],legLocation[1]);
-    ellipse(0,0,limbSize[0],limbSize[1]);
+    rotate(rotation[0]);
+    line(0,0,limbSize[0],limbSize[1]);
     pop();
     //2
     push();
     translate(legLocation[0],legLocation[1] + limbSize[1]);
-    ellipse(0,0,limbSize[0],limbSize[1]);
+    rotate(rotation[1]);
+    line(0,0,limbSize[0],limbSize[1]);
     pop();
 }
 
@@ -186,47 +193,83 @@ function makeTorso(){
 
 function roughPerson(){
   //roation value should always update in the rough person method. 
-  push();
-  noStroke();
-  ellipseMode(CORNER);
-  fill('white');
+
   //the person will be moving according to the speed of a song. So different set of movements for 
   //different parts of the song. 
+  /*  The song should be about 78 bpm   */
   //for debugging, utilize a onPress method with the spacebar to cycle through the movements. 
   //There is a 1st walk, 2nd walk, pause looking up, pause looking down, free fall, etc.
   //using the scene variable to go through various scenes, increment scene each time a 
   //  button is pressed. if scene > 5 reset to 0. all scenes will move except for 0, freezing at last movement of scene 5.
 
-  if(scene == 1){
-    jointBend()
-  }
-  else if(scene == 2){
-    jointBend()
-  }else if(scene == 3){
-    jointBend()
-  }else if(scene == 4){
-    jointBend()
-  }else if(scene == 5){
-    jointBend()
-  }
-  
-  
+
+  jointBend()
+
   
   
 
   //jointBend();
+  //drawBody();
+ }
+
+function mousePressed(){
+  //used to cycle through the scenes of the person. 
+  scene += 1;
+  if (scene > 1){
+    resetLimbs();
+    scene = 0;
+  }
+}
+
+function resetLimbs(){
+  headLoc = defaultLimbs.get('headLoc');
+  torsoLoc = defaultLimbs.get('torsoLoc')
+  leftArmLoc = defaultLimbs.get('leftArmLoc')
+  rightArmLoc = defaultLimbs.get('rightArmLoc')
+  leftLegLoc = defaultLimbs.get('leftLegLoc')
+  rightLegLoc = defaultLimbs.get('rightLegLoc')
+  headSize = defaultLimbs.get('headSize')
+  torsoSize = defaultLimbs.get('torsoSize')
+  leftArmSize = defaultLimbs.get('leftArmSize')
+  rightArmSize = defaultLimbs.get('rightArmSize')
+  leftLegSize = defaultLimbs.get('leftLegSize')
+  rightLegSize = defaultLimbs.get('rightLegSize')
+  legLimbSize = defaultLimbs.get('legLimbSize')
+  leftArmRotation = defaultLimbs.get('leftArmRotation')
+  rightArmRotation = defaultLimbs.get('rightArmRotation')
+  leftLegRotation = defaultLimbs.get('leftLegRotation')
+  rightLegRotation = defaultLimbs.get('rightLegRotation')
+  headRotation = defaultLimbs.get('headRotation')
+  torsoRotation = defaultLimbs.get('torsoRotation')
+  
+
+  allLimbs.set('headLoc', headLoc);
+  allLimbs.set('torsoLoc', torsoLoc);
+  allLimbs.set('leftArmLoc',leftArmLoc);
+  allLimbs.set('rightArmLoc', rightArmLoc);
+  allLimbs.set('leftLegLoc', leftLegLoc);
+  allLimbs.set('rightLegLoc', rightLegLoc);
+  allLimbs.set('headSize', headSize);
+  allLimbs.set('torsoSize',torsoSize);
+  allLimbs.set('leftArmSize', leftArmSize);
+  allLimbs.set('rightArmSize',rightArmSize);
+  allLimbs.set('leftLegSize', leftLegSize);
+  allLimbs.set('rightLegSize', rightLegSize);
+  allLimbs.set('legLimbSize',legLimbSize);
+  allLimbs.set('leftArmRotation',leftArmRotation);
+  allLimbs.set('rightArmRotation',rightArmRotation);
+  allLimbs.set('leftLegRotation',leftLegRotation);
+  allLimbs.set('rightLegRotation',rightLegRotation);
+  allLimbs.set('headRotation',headRotation);
+  allLimbs.set('torsoRotation',torsoRotation);
+
+  armRotation = 0;
+}
+function drawBody(){
   makeTorso();
   makeHead();
   makeLegs();
   makeArms();
-  pop();
-}
-
-function mousePressed(){
-  scene += 1;
-  if (scene > 1){
-    scene = 0;
-  }
 }
 /*
 function template(){
@@ -485,9 +528,7 @@ function setRain(){
   }
 }
 
-function person(){
 
-}
 
 function setLimbs(){
   let change = 0.5;
@@ -502,7 +543,7 @@ function setLimbs(){
   //one arm has 2 limbs. the top arm has 2 joints, the forearm has one joint.
   //one leg has 2 limbs. the top leg has 2 joints, the shin has one joint.  
   let headLoc = [138,100];
-  allLimbs.set('headLoc', [138,100]);
+  allLimbs.set('headLoc', headLoc);
   allLimbs.set('torsoLoc', [headLoc[0]+7,headLoc[1]+20]);
   allLimbs.set('leftArmLoc',[headLoc[0]+7,headLoc[1]+27]);
   allLimbs.set('rightArmLoc', [headLoc[0]+17,headLoc[1]+27]);
@@ -515,16 +556,57 @@ function setLimbs(){
   allLimbs.set('leftLegSize', [0,20]);
   allLimbs.set('rightLegSize', [0,20]);
   allLimbs.set('legLimbSize',[0,20/2]);
-  allLimbs.set('leftArmRotation',0);
+  allLimbs.set('leftArmRotation',[0,0]);
+  allLimbs.set('rightArmRotation',[0,0]);
+  allLimbs.set('leftLegRotation',[0,0]);
+  allLimbs.set('rightLegRotation',[0,0]);
+  allLimbs.set('headRotation',0);
+  allLimbs.set('torsoRotation',0);
+  defaultLimbs = allLimbs;
   pop();
 }
 
 function jointBend(){
+  push();
+  noStroke();
+  ellipseMode(CORNER);
+  fill('white');
   //each limb has a joint with a specific range of motion. 
-
+  //when switching 
+  let legChange = [[0,0],[0,0]]
+  let leftArmRotation = allLimbs.get('leftArmRotation');
+  let rightArmRotation = allLimbs.get('rightArmRotation'); 
+  let leftLegRotation = allLimbs.get('leftLegRotation');
+  let rightLegRotation = allLimbs.get('rightLegRotation');
+  let previousLimbs = [leftArmRotation,rightArmRotation,leftLegRotation,rightLegRotation];
   //arms
+  if (scene === 1){
+    //change the rotations for the legs
+    //starting position. walk.
+    leftLegRotation = [0,30];
+    rightLegRotation = [0,0];
+    allLimbs.set('leftLegRotation', leftLegRotation);                                                                                                                                                                      
+    allLimbs.set('rightLegRotation', rightLegRotation);
+    legChange[0] = leftLegRotation;
+    legChange[1] = rightLegRotation;
+  }
+  else{
+    //get back to the original by referencing the previous rotation.
+    leftArmRotation = allLimbs.get('leftArmRotation');
+    rightArmRotation = allLimbs.get('rightArmRotation'); 
+    leftLegRotation = allLimbs.get('leftLegRotation');
+    rightLegRotation = allLimbs.get('rightLegRotation');
+
+    leftLegRotation = legChange[0];
+    rightLegRotation = legChange[1];
+    allLimbs.set('leftLegRotation', leftLegRotation);
+    allLimbs.set('rightLegRotation', rightLegRotation);
+  }
   if (armRotation > 50 || armRotation < -50){
     speedRotation *= -1;
   }
   armRotation += speedRotation;
+  console.log("scene: " + scene);
+  drawBody();
+  pop();
 }
