@@ -72,9 +72,9 @@ function testLimbs(){
   push();
   strokeWeight(10);
   stroke(255, 204, 0);
-  translate(50,50);
   point(firstLimb[0].x, firstLimb[0].y);
   point(firstLimb[1].x, firstLimb[1].y);
+  //strokeWeight(20);
   point(firstLimb[2].x, firstLimb[2].y);
   //console.log(firstLimb[2])
   pop();
@@ -175,10 +175,31 @@ function makeArm(armLocation, limbSize, rotation, adjustSize = 2){
   //console.log('arm rotation : ' + limbSize[1] * cos(rotation[0]));
   //let sum = armLocation[1].x + limbSize[1] * cos(rotation[0]);
   //console.log('arm sum: ' + sum)
-  //armLocation[1].x = (limbSize[1]/2) * cos(rotation[0]);
+  //armLocation[1].x *= cos(rotation[0]);
   //armLocation[1].y = (limbSize[1]/2) * sin(rotation[0]);
   //armLocation[2].x = (limbSize[1]/2) * cos(rotation[1]);
   //armLocation[2].y = (limbSize[1]/2) * sin(rotation[1]);
+  //apply cosine rule. 
+  //first limb uses rotation[0]
+  if(rotation[0] != 0){
+    let s1 = Math.pow(limbSize[1],2) + Math.pow(limbSize[1],2);
+    let s2 = 2*limbSize[1]*limbSize[1];
+    let s3 =  cos(rotation[0]);
+    let s4 = s1 - (s2*s3);
+    let distanceBetween0_1 = Math.sqrt(s4);
+    armLocation[1].x = armLocation[0].x + Math.abs(distanceBetween0_1)*cos(rotation[0]);
+    armLocation[1].y = armLocation[0].y + Math.abs(distanceBetween0_1)*sin(rotation[0]);
+  }
+  //second limb uses rotation[1]
+  if(rotation[1] != 0){
+    s1 = Math.pow(limbSize[1],2) + Math.pow(limbSize[1],2);
+    s2 = 2*limbSize[1]*limbSize[1];
+    s3 =  cos(rotation[1]);
+    s4 = s1 - (s2*s3);
+    distanceBetween1_2 = Math.sqrt(s4);
+    armLocation[2].x = armLocation[1].x + Math.abs(distanceBetween1_2)*cos(rotation[1]);
+    armLocation[2].y = armLocation[1].y + Math.abs(distanceBetween1_2)*sin(rotation[1]);
+  }
   push();
   line(armLocation[0].x,armLocation[0].y,armLocation[1].x,armLocation[1].y);
   pop();
@@ -328,11 +349,11 @@ function resetLimbs(){
   armRotation = 0;
 }
 function drawBody(){
-  testLimbs();
   makeTorso(); 
   makeHead();
   makeLegs();
   makeArms();
+  testLimbs();
 }
 /*
 function template(){
@@ -684,7 +705,7 @@ function jointBend(){
     allLimbs.set('leftLegRotation', leftLegRotation);                                                                                                                                                                      
     allLimbs.set('rightLegRotation', rightLegRotation);
     rightArmRotation = [0,0];
-    leftArmRotation = [0,30];
+    leftArmRotation = [100,100];
     allLimbs.set('leftArmRotation', leftArmRotation);                                                                                                                                                                      
     allLimbs.set('rightArmRotation', rightArmRotation);
     //end
