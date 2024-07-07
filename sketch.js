@@ -170,6 +170,54 @@ function makeLegs(){
   pop();
 }
 
+
+/* Method to have 2 lines rotate independently around connected joints. 
+
+function setup() {
+  createCanvas(400, 400);
+}
+xStationary = 100;
+yStationary = 100;
+newXStationary = xStationary;
+newYStationary = yStationary;
+limbSize = 30;
+speed1 = 0.01;
+speed2 = 0.03;
+function draw() {
+  background(220);
+  xStationary += speed1;
+  yStationary += speed1;
+  cosX = cos(xStationary);
+  sinY = sin(yStationary);
+  //xStationary += 1;
+  rotation1 = [cosX*limbSize,sinY*limbSize]
+  
+  push();
+  translate(xStationary, yStationary);
+  line(0,0,rotation1[0],rotation1[1])
+  pop();
+  push();
+  strokeWeight(4)
+  point(xStationary,yStationary);
+  pop();
+  push();
+  strokeWeight(10);
+  translate(xStationary,yStationary);
+  point(rotation1[0],rotation1[1]);
+  pop();
+  newXStationary += speed2;
+  newYStationary += speed2;
+  cosX = cos(newXStationary);
+  sinY = sin(newYStationary);
+  newX = xStationary + rotation1[0];
+  newY = yStationary + rotation1[1];
+  rotation2 = [cosX*limbSize, sinY*limbSize];
+  push();
+  translate(newX, newY);
+  line(0,0,rotation2[0],rotation2[1])
+  pop();
+}
+*/
 function makeArm(armLocation, limbSize, rotation, adjustSize = 2){
   //console.log('arm location : ' + armLocation[1].x);
   //console.log('arm rotation : ' + limbSize[1] * cos(rotation[0]));
@@ -181,22 +229,21 @@ function makeArm(armLocation, limbSize, rotation, adjustSize = 2){
   //armLocation[2].y = (limbSize[1]/2) * sin(rotation[1]);
   //apply cosine rule. 
   //first limb uses rotation[0]
+  let s1 = Math.pow(limbSize[1],2) + Math.pow(limbSize[1],2);
+  let s2 = 2*limbSize[1]*limbSize[1];
+  let s3,s4;
   if(rotation[0] != 0){
-    let s1 = Math.pow(limbSize[1],2) + Math.pow(limbSize[1],2);
-    let s2 = 2*limbSize[1]*limbSize[1];
-    let s3 =  cos(rotation[0]);
-    let s4 = s1 - (s2*s3);
+    s3 = cos(rotation[0]);
+    s4 = s1 - (s2*s3);
     let distanceBetween0_1 = Math.sqrt(s4);
     armLocation[1].x = armLocation[0].x + Math.abs(distanceBetween0_1)*cos(rotation[0]);
     armLocation[1].y = armLocation[0].y + Math.abs(distanceBetween0_1)*sin(rotation[0]);
   }
   //second limb uses rotation[1]
   if(rotation[1] != 0){
-    s1 = Math.pow(limbSize[1],2) + Math.pow(limbSize[1],2);
-    s2 = 2*limbSize[1]*limbSize[1];
-    s3 =  cos(rotation[1]);
+    s3 = cos(rotation[1]);
     s4 = s1 - (s2*s3);
-    distanceBetween1_2 = Math.sqrt(s4);
+    distanceBetween1_2 = Math.sqrt(s4); 
     armLocation[2].x = armLocation[1].x + Math.abs(distanceBetween1_2)*cos(rotation[1]);
     armLocation[2].y = armLocation[1].y + Math.abs(distanceBetween1_2)*sin(rotation[1]);
   }
@@ -704,8 +751,8 @@ function jointBend(){
     rightLegRotation = [0,0];
     allLimbs.set('leftLegRotation', leftLegRotation);                                                                                                                                                                      
     allLimbs.set('rightLegRotation', rightLegRotation);
-    rightArmRotation = [0,0];
-    leftArmRotation = [100,100];
+    rightArmRotation = [20,20];
+    leftArmRotation = [30,30];
     allLimbs.set('leftArmRotation', leftArmRotation);                                                                                                                                                                      
     allLimbs.set('rightArmRotation', rightArmRotation);
     //end
@@ -719,8 +766,8 @@ function jointBend(){
 
     leftLegRotation = [0,0];
     rightLegRotation = [0,0];
-    leftArmRotation = [0,0];
-    rightArmRotation = [0,0];
+    leftArmRotation = [90,90];
+    rightArmRotation = [90,90];
     allLimbs.set('leftLegRotation', leftLegRotation);
     allLimbs.set('rightLegRotation', rightLegRotation);
     allLimbs.set('leftArmRotation', leftArmRotation);
