@@ -55,7 +55,18 @@ function draw() {
   //template();
   //moveLine();
   //walk
-  roughPerson();
+  //roughPerson();
+  playScenes();
+}
+
+function playScenes(){
+  sceneNumber = 0;
+  if (sceneNumber == 0){
+    //noStroke();
+    //fill('white');
+    sceneOne();
+  }
+  drawBody();
 }
 
 
@@ -70,7 +81,7 @@ let y4 = y3;
 function testLimbs(){
   let firstLimb = allLimbs.get('leftArmLoc');
   push();
-  strokeWeight(10);
+  strokeWeight(7);
   stroke(255, 204, 0);
   point(firstLimb[0].x, firstLimb[0].y);
   point(firstLimb[1].x, firstLimb[1].y);
@@ -80,57 +91,161 @@ function testLimbs(){
   pop();
 }
 
-function moveLine(){
-  //manipulate left arm to wave back and forth
-  //change the coords for the left hand
-  //get arm to move up.
-
-  
-  //dragSegment(0, mouseX, mouseY);
-//  for (let i = 0; i < x.length - 1; i++) {
-//    dragSegment(i + 1, x[i], y[i]);
-//  }
-  
-  currentPoint += lineChange;
-  if(currentPoint > 100 || currentPoint < 50){
-    lineChange = -lineChange
-  }
-  //let rotation = allLimbs.get('leftArmRotation');
-  //rotation += change1;
-  //allLimbs.set('leftArmRotation', rotation);
-}
-
-function dragSegment(i, xin, yin){
-  
-  dx = xin - x3;
-  dy = yin - y3;
-  let angle1 = atan2(dy, dx);
-
-  tx = xin - cos(angle1) * segLength;
-  ty = yin - sin(angle1) * segLength;
-  dx = tx - x4;
-  dy = ty - y4;
-  let angle2 = atan2(dy, dx);
-  x3 = x4 + cos(angle2) * segLength;
-  y3 = y4 + sin(angle2) * segLength;
-
-  segment(x3, y3, angle1);
-  segment(x4, y4, angle2);
-  /*
-  console.log('x3: ' + x3);
-  console.log('y3: ' + y3);
-  console.log('angle1: ' + angle1);
-  console.log('x4: ' + x4);
-  console.log('y4: ' + y4);
-  console.log('angle2: ' + angle2);
-  */
- }
-
-function segment(x,y,a){
+function sceneOne(head_goal, leg_goal, arm_goal, angle1, angle2){
   push();
-  translate(x,y);
-  rotate(a);
-  line(0,0,segLength,segLength);
+  //hands in pocket
+  //This function should set the position of all body parts. 
+  // *^head(-,-) x-coord should be slightly right. y-coord should be slightly down.
+  // torso(-,-) as of now the torso will remain upright.
+  // *^leftarm(90,90) 
+  // *^rightarm(-,-) should align with torso to hide.
+  // *~leftLeg and rightleg will mimic walking. 
+  // * limbs that will be altered.
+  // ^ limbs that will lock into only one location
+  // ~ limbs that will continue moving 
+  // keep nextScene boolean variable to trigger the next scene.
+  let nextScene = false;
+  let torsoLoc = allLimbs.get("torsoLoc");
+  let leftLegLoc = allLimbs.get("leftLegLoc");
+  let rightLegLoc = allLimbs.get("rightLegLoc");
+  let leftLegFreeze = allLimbs.get("leftLegFreeze");
+  let rightLegFreeze = allLimbs.get("rightLegFreeze");
+  
+  //Alter Head
+  let headLoc = allLimbs.get("headLoc");
+  let headFreeze = allLimbs.get("headFreeze");
+  let maxHeadOffset = [-15,-15];
+  let headGoal = [torsoLoc[0].x + maxHeadOffset[0], torsoLoc[0].y + maxHeadOffset[1]];
+  if(headFreeze == false){
+    let speed = 0.1;
+    headLoc.x += speed;
+    headLoc.y += speed;
+  }
+  if(headLoc.x >= headGoal[0] && headLoc.y >= headGoal[1]){
+    headFreeze = true;
+  }
+  //Alter Arms
+  let leftArmLoc = allLimbs.get("leftArmLoc");
+  let rightArmLoc = allLimbs.get("rightArmLoc");
+  let leftArmSize = allLimbs.get('leftArmSize');
+  let rightArmSize = allLimbs.get('rightArmSize');
+  let leftArmRotation = allLimbs.get('leftArmRotation');
+  let rightArmRotation = allLimbs.get('rightArmRotation');
+  let leftLegRotation = allLimbs.get('leftLegRotation');
+  let rightLegRotation = allLimbs.get('rightLegRotation');
+  let leftArmFreeze = allLimbs.get("leftArmFreeze");
+  let rightArmFreeze = allLimbs.get("rightArmFreeze");
+  let movingForward = allLimbs.get("movingForward");
+  //right
+  let rightArmOffset = 5;
+  let rightArmGoal = torsoLoc[0].x+rightArmOffset; //torsoLoc only has one (x,y).
+  if(rightArmLoc[0].x > rightArmGoal && rightArmFreeze == false){
+    let speed = 0.1;
+    rightArmLoc[0].x -= speed;
+    rightArmLoc[1].x -= speed;
+    rightArmLoc[2].x -= speed;
+  }
+  if(rightArmLoc[0].x <= rightArmGoal){
+    rightArmFreeze = true;
+  }
+  //left
+  let leftArmGoal = [120,60];
+  if(leftArmRotation[0] < leftArmGoal[0] ){
+    let speed = 1;
+    leftArmRotation[0] += speed;
+  }
+  if(leftArmRotation[1] > leftArmGoal[1]){
+    let speed = -1;
+    leftArmRotation[1] += speed;
+  }
+
+  //Alter Legs 
+  let legOffset = 20; 
+  let maxLegMovement = [135-legOffset,45+legOffset];
+  let legSpeed = [0.7,0.5];
+  //right
+  //forward - lead with top limb.
+  
+  if(movingForward == true){
+    if(rightLegRotation[0] > maxLegMovement[1]){
+      rightLegRotation[0] -= legSpeed[0];
+    }
+    if(rightLegRotation[1] > maxLegMovement[1]){
+      rightLegRotation[1] -= legSpeed[1];
+    }
+    if(leftLegRotation[0] < maxLegMovement[0]){
+      leftLegRotation[0] += legSpeed[1];
+    }
+    if(leftLegRotation[1] < maxLegMovement[0]){
+      leftLegRotation[1] += legSpeed[0];
+    }
+    if(rightLegRotation[1] <= maxLegMovement[1]+legOffset/4){
+      movingForward = !movingForward;
+    }
+  }
+  else{
+    if(rightLegRotation[0] < maxLegMovement[0]){
+      rightLegRotation[0] += legSpeed[1];
+    }
+    if(rightLegRotation[1] < maxLegMovement[0]){
+      rightLegRotation[1] += legSpeed[0];
+    }
+    if(leftLegRotation[0] > maxLegMovement[1]){
+      leftLegRotation[0] -= legSpeed[0];
+    }
+    if(leftLegRotation[1] > maxLegMovement[1]){
+      leftLegRotation[1] -= legSpeed[1];
+    }
+    if(leftLegRotation[1] <= maxLegMovement[1]){
+      movingForward = !movingForward;
+    }
+  }
+  
+
+
+  let goal_angle1 = 90;
+  let goal_angle2 = 90;
+  let speed1 = 0;
+  let speed2 = 0;
+  let change1 = 0.8;
+  let change2 = 0.9;
+  if(angle1 >= goal_angle1){
+    speed1 = -change1;
+  }
+  else if(angle1 <= goal_angle1){
+    speed1 = change1;    
+  }
+  if(angle2 >= goal_angle2){
+    speed2 = -change2;
+  }
+  else if(angle2 <= goal_angle2){
+    speed2 = change2;
+  }
+  if(angle1 <= (goal_angle1 + change1) && angle1 >= (goal_angle1 - change1)){
+    angle1 = goal_angle1; 
+    speed1 = 0;
+  }
+  if(angle2 <= (goal_angle2 + change2) && angle2 >= (goal_angle2 - change2)){
+    angle2 = goal_angle2;
+    speed2 = 0;
+   }
+  angle1 += speed1;
+  angle2 += speed2;
+
+  allLimbs.set("headLoc", headLoc);
+  allLimbs.set("leftLegLoc",leftLegLoc);
+  allLimbs.set("rightLegLoc", rightLegLoc);
+  allLimbs.set("leftArmLoc", leftArmLoc);
+  allLimbs.set("rightArmLoc", rightArmLoc);
+  allLimbs.set("leftArmRotation", leftArmRotation);
+  allLimbs.set("leftLegRotation", leftLegRotation);
+  allLimbs.set("rightLegRotation", rightLegRotation);
+  allLimbs.set("headFreeze", headFreeze);
+  allLimbs.set("leftLegFreeze", leftLegFreeze);
+  allLimbs.set("rightLegFreeze", rightLegFreeze);
+  allLimbs.set("rightArmFreeze", rightArmFreeze);
+  allLimbs.set("leftArmFreeze", leftArmFreeze);
+  allLimbs.set("movingForward", movingForward);
   pop();
 }
 
@@ -145,8 +260,13 @@ function makeArms(){
   let rightSize = allLimbs.get('rightArmSize');
   let leftRotation = allLimbs.get('leftArmRotation');
   let rightRotation = allLimbs.get('rightArmRotation');
-  makeArm(leftLoc, leftSize, leftRotation);
-  makeArm(rightLoc, rightSize, rightRotation);
+  //makeArm(leftLoc, leftSize, leftRotation);
+  //makeArm(rightLoc, rightSize, rightRotation);
+
+
+  makeArm2(leftLoc, leftSize[1], leftRotation);
+  makeArm2(rightLoc, rightSize[1], rightRotation);
+
   //dragSegment(leftLoc[0], leftLoc[1], leftRotation[0]);
   //console.log('leftLoc1: ' + leftLoc[0]);
   //console.log('rightLoc2: ' + leftLoc[1]);
@@ -165,37 +285,77 @@ function makeLegs(){
   let rightSize = allLimbs.get('rightLegSize');  
   let leftRotation = allLimbs.get('leftLegRotation');
   let rightRotation = allLimbs.get('rightLegRotation');
-  makeLeg(leftLoc, leftSize, leftRotation);
-  makeLeg(rightLoc, rightSize, rightRotation);
+  //makeLeg(leftLoc, leftSize, leftRotation);
+  //makeLeg(rightLoc, rightSize, rightRotation);
+  makeLeg2(leftLoc, leftSize[1], leftRotation);
+  makeLeg2(rightLoc, rightSize[1], rightRotation);
   pop();
 }
 
 
 /* Method to have 2 lines rotate independently around connected joints. 
 
-function setup() {
-  createCanvas(400, 400);
-}
 xStationary = 100;
 yStationary = 100;
+angle1 = 120;
+angle2 = 60;
 newXStationary = xStationary;
 newYStationary = yStationary;
 limbSize = 30;
+dotSpeed = 0.01;
 speed1 = 0.01;
-speed2 = 0.03;
+speed2 = 0.7;
+sceneNumber = 0;
+sec = -1;
+armSize = 25;
+armLoc = [[xStationary,yStationary],[xStationary,yStationary+ armSize/2],[xStationary,yStationary + armSize]];
+armRot = [90,90]
+
+function setup() {
+  createCanvas(400, 400);
+  angleMode(DEGREES)
+  sec = second();
+}
+
 function draw() {
   background(220);
-  xStationary += speed1;
-  yStationary += speed1;
-  cosX = cos(xStationary);
-  sinY = sin(yStationary);
+  makeArm(armLoc, armSize, armRot);
+  if(Math.abs(second() - sec) >= 5){
+    //scenes will change every 5 seconds;
+    sec = second();
+    //sceneNumber++;
+    sceneMax = 2;
+    if(sceneNumber > sceneMax){
+      sceneNumber = 0;
+    }
+  }
+  sceneMax = 2;
+  if(sceneNumber > sceneMax){
+      sceneNumber = 0;
+  }
+  if(sceneNumber == 0){
+    sceneOne();
+    //sceneFour();
+  }
+  else if(sceneNumber == 1){
+    sceneTwo();
+    //sceneOne();
+  }
+  else if(sceneNumber == 2){
+    sceneThree();
+  }
+  xStationary += dotSpeed;
+  yStationary += dotSpeed;
+  cosX = cos(angle1);
+  sinY = sin(angle1);
   //xStationary += 1;
-  rotation1 = [cosX*limbSize,sinY*limbSize]
+  endPoint1 = [cosX*limbSize,sinY*limbSize]
   
   push();
   translate(xStationary, yStationary);
-  line(0,0,rotation1[0],rotation1[1])
+  line(0,0,endPoint1[0],endPoint1[1])
   pop();
+  
   push();
   strokeWeight(4)
   point(xStationary,yStationary);
@@ -203,50 +363,183 @@ function draw() {
   push();
   strokeWeight(10);
   translate(xStationary,yStationary);
-  point(rotation1[0],rotation1[1]);
+  point(endPoint1[0],endPoint1[1]);
   pop();
+  
   newXStationary += speed2;
   newYStationary += speed2;
-  cosX = cos(newXStationary);
-  sinY = sin(newYStationary);
-  newX = xStationary + rotation1[0];
-  newY = yStationary + rotation1[1];
-  rotation2 = [cosX*limbSize, sinY*limbSize];
+  cosX = cos(angle2);
+  sinY = sin(angle2);
+  newX = xStationary + endPoint1[0];
+  newY = yStationary + endPoint1[1];
+  endPoint2 = [cosX*limbSize, sinY*limbSize];
+  
   push();
   translate(newX, newY);
-  line(0,0,rotation2[0],rotation2[1])
+  line(0,0,endPoint2[0],endPoint2[1])
   pop();
+  
+  message = "sceneNumber : " + sceneNumber;
+  message2 = "seconds: " + sec;
+  text(message, 300,100);
+  text(message2, 300,110);
+}
+
+function sceneOne(){
+  goal_angle1 = 90;
+  goal_angle2 = 90;
+  speed1 = 0;
+  speed2 = 0;
+  change1 = 0.8;
+  change2 = 0.9;
+  found1 = false;
+  found2 = false;
+  if(angle1 >= goal_angle1){
+    speed1 = -change1;
+  }
+  else if(angle1 <= goal_angle1){
+    speed1 = change1;    
+  }
+  if(angle2 >= goal_angle2){
+    speed2 = -change2;
+  }
+  else if(angle2 <= goal_angle2){
+    speed2 = change2;
+  }
+  if(angle1 <= (goal_angle1 + change1) && angle1 >= (goal_angle1 - change1)){
+    angle1 = goal_angle1; 
+    speed1 = 0;
+    found1 = true;
+  }
+  if(angle2 <= (goal_angle2 + change2) && angle2 >= (goal_angle2 - change2)){
+    angle2 = goal_angle2;
+    speed2 = 0;
+    found2 = true;
+   }
+  if(found1 == true && found2 == true)   {
+    sceneNumber++;  
+  }
+  angle1 += speed1;
+  angle2 += speed2;
+}
+function sceneTwo(){
+  goal_angle1 = 120;
+  goal_angle2 = 60;
+  speed1 = 0;
+  speed2 = 0;
+  found1 = false;
+  found2 = false;  
+  if(angle1 <= goal_angle1){
+    speed1 = 0.7;
+  }
+  if(angle2 >= goal_angle2){
+    speed2 = -0.5
+  }
+  if(angle1 >= goal_angle1){
+    angle1 = goal_angle1; 
+    speed1 = 0;
+    found1 = true;
+  }
+  if(angle2 <= goal_angle2){
+    angle2 = goal_angle2;
+    speed2 = 0;
+    found2 = true;
+   }
+  if(found1 == true && found2 == true)   {
+    sceneNumber++;  
+  }
+  angle1 += speed1;
+  angle2 += speed2;
+  message = "angle1 : " + angle1;
+  message2 = "goal angle1 : " + goal_angle1;
+  message3 = "angle2 : " + angle2;
+  message4 = "goal_angle2 : " + goal_angle2;
+  text(message,100,300)
+  text(message2,100,310)
+  text(message3,100,320)
+  text(message4,100,330)
+  
+}
+function sceneThree(){  
+  goal_angle1 = 180;
+  goal_angle2 = 180;
+  speed1 = 0;
+  speed2 = 0;
+  found1 = false;
+  found2 = false;  
+
+  if(angle1 <= goal_angle1){
+    speed1 = 0.8;
+  }
+  if(angle2 <= goal_angle2){
+    speed2 = 0.7
+  }
+  if(angle1 >= goal_angle1){
+    angle1 = goal_angle1; 
+    speed1 = 0;
+    found1 = true;
+  }
+  if(angle2 >= goal_angle2){
+    angle2 = goal_angle2;
+    speed2 = 0;
+    found2 = true;
+   }
+  if(found1 == true && found2 == true)   {
+    sceneNumber++;  
+  }
+  angle1 += speed1;
+  angle2 += speed2;
+}
+function sceneFour(){
+  angle1 = 0;
+  angle2 = 0;
+}
+
+
+
+function makeArm(armLocation, limbSize, rotation, adjustSize = 2){
+
+  cosX = cos(rotation[0])/limbSize;
+  sinY = sin(rotation[0])/limbSize;
+  //xStationary += 1;
+  endPoint1 = [cosX*limbSize,sinY*limbSize]
+  
+  push();
+  translate(armLocation[0][0], armLocation[0][1]);
+  line(0,0,endPoint1[0],endPoint1[1])
+  pop();
+  
+  cosX = cos(rotation[1]);
+  sinY = sin(rotation[1]);
+  newX = armLocation[0][0] + endPoint1[0];
+  newY = armLocation[0][1] + endPoint1[1];
+  endPoint2 = [cosX*limbSize, sinY*limbSize];
+  
+  push();
+  translate(newX, newY);
+  line(0,0,endPoint2[0],endPoint2[1])
+  pop();
+  
+  /*
+  push();
+  line(armLocation[0][0],armLocation[0][1],armLocation[1][0],armLocation[1][1]);
+  pop();
+  push();
+  line(armLocation[1][0], armLocation[1][1], armLocation[2][0],armLocation[2][1]);
+  pop();
+ 
+  //placements for the joints
+  push();
+  strokeWeight(5);
+  point(armLocation[0][0],armLocation[0][1])
+  strokeWeight(3);
+  point(armLocation[1][0],armLocation[1][1])
+  point(armLocation[2][0],armLocation[2][1])
+  pop()
 }
 */
 function makeArm(armLocation, limbSize, rotation, adjustSize = 2){
-  //console.log('arm location : ' + armLocation[1].x);
-  //console.log('arm rotation : ' + limbSize[1] * cos(rotation[0]));
-  //let sum = armLocation[1].x + limbSize[1] * cos(rotation[0]);
-  //console.log('arm sum: ' + sum)
-  //armLocation[1].x *= cos(rotation[0]);
-  //armLocation[1].y = (limbSize[1]/2) * sin(rotation[0]);
-  //armLocation[2].x = (limbSize[1]/2) * cos(rotation[1]);
-  //armLocation[2].y = (limbSize[1]/2) * sin(rotation[1]);
-  //apply cosine rule. 
-  //first limb uses rotation[0]
-  let s1 = Math.pow(limbSize[1],2) + Math.pow(limbSize[1],2);
-  let s2 = 2*limbSize[1]*limbSize[1];
-  let s3,s4;
-  if(rotation[0] != 0){
-    s3 = cos(rotation[0]);
-    s4 = s1 - (s2*s3);
-    let distanceBetween0_1 = Math.sqrt(s4);
-    armLocation[1].x = armLocation[0].x + Math.abs(distanceBetween0_1)*cos(rotation[0]);
-    armLocation[1].y = armLocation[0].y + Math.abs(distanceBetween0_1)*sin(rotation[0]);
-  }
-  //second limb uses rotation[1]
-  if(rotation[1] != 0){
-    s3 = cos(rotation[1]);
-    s4 = s1 - (s2*s3);
-    distanceBetween1_2 = Math.sqrt(s4); 
-    armLocation[2].x = armLocation[1].x + Math.abs(distanceBetween1_2)*cos(rotation[1]);
-    armLocation[2].y = armLocation[1].y + Math.abs(distanceBetween1_2)*sin(rotation[1]);
-  }
+
   push();
   line(armLocation[0].x,armLocation[0].y,armLocation[1].x,armLocation[1].y);
   pop();
@@ -254,25 +547,30 @@ function makeArm(armLocation, limbSize, rotation, adjustSize = 2){
   line(armLocation[1].x, armLocation[1].y, armLocation[2].x,armLocation[2].y);
   pop();
 }
-/*
-function makeArm(armLocation, limbSize, rotation, adjustSize = 2){
-    //adjustSize: should not be 0, and the smaller you want the limb, the bigger the number
-    //if 1 rotates, the starting positions to the 2 limb needs to change. 
-    //1
-    let p1 = createVector(0,0);
-    push();
-    translate(armLocation[0],armLocation[1]);
-    rotate(rotation[0]);
-    line(0,0,limbSize[0],limbSize[1]/adjustSize)
-    pop();
-    //2
-    push();
-    translate(armLocation[0],armLocation[1] + limbSize[1]/adjustSize);
-    rotate(rotation[1]);
-    ellipse(0,0,limbSize[0],limbSize[1])
-    pop();
+
+function makeArm2(armLocation, limbSize, rotation, adjustSize = .5){
+  let cosX = cos(rotation[0]);
+  let sinY = sin(rotation[0]);
+  //xStationary += 1;
+  endPoint1 = [cosX*limbSize,sinY*limbSize]
+  
+  push();
+  translate(armLocation[0].x, armLocation[0].y);
+  line(0,0,endPoint1[0]*adjustSize,endPoint1[1]*adjustSize)
+  pop();
+  
+  cosX = cos(rotation[1]);
+  sinY = sin(rotation[1]);
+  newX = armLocation[0].x + endPoint1[0]*adjustSize;
+  newY = armLocation[0].y + endPoint1[1]*adjustSize;
+  endPoint2 = [cosX*limbSize, sinY*limbSize];
+  
+  push();
+  translate(newX, newY);
+  line(0,0,endPoint2[0]*adjustSize,endPoint2[1]*adjustSize)
+  pop();
 }
-*/
+
 
 function makeLeg(legLocation, limbSize, rotation){
   //legLocation[1].x = limbSize[1] * cos(rotation[0]);
@@ -286,6 +584,29 @@ function makeLeg(legLocation, limbSize, rotation){
   //2
   push();
   line(legLocation[1].x,legLocation[1].y,legLocation[2].x,legLocation[2].x);
+  pop();
+}
+
+function makeLeg2(legLocation, limbSize, rotation, adjustSize = .3){
+  let cosX = cos(rotation[0]);
+  let sinY = sin(rotation[0]);
+  //xStationary += 1;
+  endPoint1 = [cosX*limbSize,sinY*limbSize]
+  
+  push();
+  translate(legLocation[0].x, legLocation[0].y);
+  line(0,0,endPoint1[0]*adjustSize,endPoint1[1]*adjustSize)
+  pop();
+  
+  cosX = cos(rotation[1]);
+  sinY = sin(rotation[1]);
+  newX = legLocation[0].x + endPoint1[0]*adjustSize;
+  newY = legLocation[0].y + endPoint1[1]*adjustSize;
+  endPoint2 = [cosX*limbSize, sinY*limbSize];
+  
+  push();
+  translate(newX, newY);
+  line(0,0,endPoint2[0]*adjustSize,endPoint2[1]*adjustSize)
   pop();
 }
 /*
@@ -306,6 +627,8 @@ function makeLeg(legLocation, limbSize, rotation){
 */
 
 function makeHead(){
+  strokeWeight(0);
+  stroke(255, 255);
   let loc = allLimbs.get('headLoc');
   let size = allLimbs.get('headSize');
   push();
@@ -315,6 +638,8 @@ function makeHead(){
 }
 
 function makeTorso(){
+  strokeWeight(0);
+  stroke(255, 255);
   let loc = allLimbs.get('torsoLoc');
   let size = allLimbs.get('torsoSize');
   push();
@@ -396,6 +721,7 @@ function resetLimbs(){
   armRotation = 0;
 }
 function drawBody(){
+  ellipseMode(CORNER);
   makeTorso(); 
   makeHead();
   makeLegs();
@@ -721,12 +1047,19 @@ function setLimbs(){
   allLimbs.set('rightArmSize',[0,armSize]);
   allLimbs.set('leftLegSize', [0,legSize]);
   allLimbs.set('rightLegSize', [0,legSize]);
-  allLimbs.set('leftArmRotation',[0,0]);
-  allLimbs.set('rightArmRotation',[0,0]);
-  allLimbs.set('leftLegRotation',[0,0]);
-  allLimbs.set('rightLegRotation',[0,0]);
+  allLimbs.set('leftArmRotation',[90,90]);
+  allLimbs.set('rightArmRotation',[90,90]);
+  allLimbs.set('leftLegRotation',[90,90]);
+  allLimbs.set('rightLegRotation',[90,90]);
   allLimbs.set('headRotation',0);
   allLimbs.set('torsoRotation',0);
+  allLimbs.set('headFreeze', false);
+  allLimbs.set('torsoFreeze', false);
+  allLimbs.set('leftArmFreeze', false);
+  allLimbs.set('rightArmFreeze', false);
+  allLimbs.set('leftLegFreeze', false);
+  allLimbs.set('rightLegFreeze', false);
+  allLimbs.set('movingForward', false);
   defaultLimbs = allLimbs;
   pop();
 }
