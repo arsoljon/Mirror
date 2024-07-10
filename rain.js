@@ -1,0 +1,65 @@
+let w = 450;
+let h = 300;
+//rain
+let rainSpeed = 3;
+let rainMap = new Map();
+const rainDropCount = 400;
+
+function rain(){
+    //a plethora of tiny lines falling downwards
+    //should start at varying heights 
+    //repeat begins falling just out of frame, 0 - length of line
+    //each path ends at a random point between the top and bottom boundaries of the ground. 
+    //each should have the same rainSpeed
+    for(let i = 0; i < rainDropCount; ++i){
+      updateRainDrop(i);
+      let position = rainMap.get(i);
+      let x1 = position.get('x1');
+      let y1 = position.get('y1');
+      let x2 = position.get('x2');
+      let y2 = position.get('y2');
+      let endpoint = position.get('endpoint');
+      if(y2 >= endpoint){
+        min = h - groundY2;
+        endpoint = h - Math.floor(Math.random() * (h - min + 1));
+        x1 = Math.floor(Math.random() * (w - 0 + 1));
+        x2 = x1;
+        y1 = -20 - sizediff;
+        y2 = y1 + sizediff;
+        position.set('x1',x1);
+        position.set('x2',x2);
+        position.set('y1',y1);
+        position.set('y2',y2);
+        position.set('endpoint',endpoint);
+        rainMap.set(i, position);
+      }
+    }
+  }
+  
+  function updateRainDrop(i){
+    let position = rainMap.get(i);
+    let x1 = position.get('x1');
+    let x2 = position.get('x2');
+    let y1 = position.get('y1');
+    let y2 = position.get('y2');
+    line(x1,y1,x2,y2);
+    y1 += rainSpeed;
+    y2 += rainSpeed;
+    position.set('y1', y1);
+    position.set('y2', y2);
+    rainMap.set(i, position);
+  }
+  
+  function setRain(){
+    for(let i = 0; i < rainDropCount; ++i){
+      let positionMap = new Map();
+      positionMap.set('x1', Math.floor(Math.random() * (w - 0 + 1)));
+      positionMap.set('x2', positionMap.get('x1'));
+      positionMap.set('y1', Math.floor(Math.random() * (-h - 0 + 1)))
+      positionMap.set('y2', positionMap.get('y1') + sizediff)
+      min = h - groundY2
+      positionMap.set('endpoint', h - (Math.floor(Math.random() * (h - min + 1))));
+      rainMap.set(i, positionMap);
+    }
+  }
+  
