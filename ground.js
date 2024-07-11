@@ -16,6 +16,9 @@ export default class Ground {
     p5.rect(0, this.groundY1, this.w,this.groundY2);
     p5.pop();
   }
+  getGroundY2(){
+    return this.groundY2;
+  }
 }
 /*
 function ground() {
