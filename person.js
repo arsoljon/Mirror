@@ -1,4 +1,184 @@
 
+
+export default class Person
+{
+  constructor(p5){
+    this.allLimbs = new Map();
+    this.defaultLimbs;
+  }
+  setLimbs(p5){
+    p5.push();
+    //head has one joint connected to torso
+    //torso has 5 joints connected to head, right leg and arm,  left leg and arm.
+    //one arm has 2 limbs. the top arm has 2 joints, the forearm has one joint.
+    //one leg has 2 limbs. the top leg has 2 joints, the shin has one joint.  
+    let headLoc = p5.createVector(138,100);
+    let armSize = 25;
+    let legSize = 50;
+    let armOffsetY = 28;
+    let legOffsetY = (headLoc.y/2)+10;
+  
+    this.allLimbs.set('headLoc', headLoc);
+    this.allLimbs.set('torsoLoc', [p5.createVector(headLoc.x+7,headLoc.y+20), p5.createVector(headLoc.x+7,headLoc.y+20+45)]);
+    this.allLimbs.set('leftArmLoc',[p5.createVector(headLoc.x+7,headLoc.y+armOffsetY), p5.createVector(headLoc.x+7,headLoc.y+armOffsetY+armSize/2),p5.createVector(headLoc.x+7,headLoc.y+armOffsetY+armSize) ]);
+    this.allLimbs.set('rightArmLoc',[ p5.createVector(headLoc.x+17,headLoc.y+armOffsetY), p5.createVector(headLoc.x+17,headLoc.y+armOffsetY+armSize/2), p5.createVector(headLoc.x+17,headLoc.y+armOffsetY+armSize)]);
+    this.allLimbs.set('leftLegLoc', [p5.createVector(headLoc.x+9,headLoc.y+legOffsetY), p5.createVector(headLoc.x+9,headLoc.y+legOffsetY+legSize/2),p5.createVector(headLoc.x+9,headLoc.y+legOffsetY+legSize)]);
+    this.allLimbs.set('rightLegLoc', [p5.createVector(headLoc.x+15,headLoc.y+legOffsetY),p5.createVector(headLoc.x+15,headLoc.y+legOffsetY+legSize/2),p5.createVector(headLoc.x+15,headLoc.y+legOffsetY+legSize)]);
+    this.allLimbs.set('headSize', [25,25]);
+    this.allLimbs.set('torsoSize',[10,45]);
+    this.allLimbs.set('leftArmSize', [0,armSize]);
+    this.allLimbs.set('rightArmSize',[0,armSize]);
+    this.allLimbs.set('leftLegSize', [0,legSize]);
+    this.allLimbs.set('rightLegSize', [0,legSize]);
+    this.allLimbs.set('leftArmRotation',[90,90]);
+    this.allLimbs.set('rightArmRotation',[90,90]);
+    this.allLimbs.set('leftLegRotation',[90,90]);
+    this.allLimbs.set('rightLegRotation',[90,90]);
+    this.allLimbs.set('headRotation',0);
+    this.allLimbs.set('torsoRotation',0);
+    this.allLimbs.set('headFreeze', false);
+    this.allLimbs.set('torsoFreeze', false);
+    this.allLimbs.set('leftArmFreeze', false);
+    this.allLimbs.set('rightArmFreeze', false);
+    this.allLimbs.set('leftLegFreeze', false);
+    this.allLimbs.set('rightLegFreeze', false);
+    this.allLimbs.set('movingForward', false);
+    this.defaultLimbs = this.allLimbs;
+    p5.pop();
+  }
+
+  makeHead(p5){
+    p5.strokeWeight(0);
+    p5.stroke(255, 255);
+    let loc = this.allLimbs.get('headLoc');
+    let size = this.allLimbs.get('headSize');
+    p5.push();
+    p5.translate(loc.x,loc.y);
+    p5.ellipse(0,0,size[0],size[1]);
+    p5.pop();
+  }
+  makeTorso(p5){
+    p5.strokeWeight(0);
+    p5.stroke(255, 255);
+    let loc = this.allLimbs.get('torsoLoc');
+    let size = this.allLimbs.get('torsoSize');
+    p5.push();
+    p5.translate(loc[0].x,loc[0].y);
+    p5.ellipse(0,0,size[0],size[1]);
+    p5.pop();
+  }
+
+  makeArms(p5){
+    //apply a general arm rotation to both arms. Recenter the axis point at leftLoc point
+    p5.push();
+    p5.strokeWeight(5);
+    p5.stroke(255, 255);
+    let leftLoc = this.allLimbs.get('leftArmLoc');
+    let rightLoc = this.allLimbs.get('rightArmLoc');
+    let leftSize = this.allLimbs.get('leftArmSize');
+    let rightSize = this.allLimbs.get('rightArmSize');
+    let leftRotation = this.allLimbs.get('leftArmRotation');
+    let rightRotation = this.allLimbs.get('rightArmRotation');
+    //makeArm(leftLoc, leftSize, leftRotation);
+    //makeArm(rightLoc, rightSize, rightRotation);
+  
+  
+    this.makeArm2(p5, leftLoc, leftSize[1], leftRotation);
+    this.makeArm2(p5, rightLoc, rightSize[1], rightRotation);
+  
+    //dragSegment(leftLoc[0], leftLoc[1], leftRotation[0]);
+    //console.log('leftLoc1: ' + leftLoc[0]);
+    //console.log('rightLoc2: ' + leftLoc[1]);
+    //console.log('leftrotation: ' + leftRotation)
+    
+    p5.pop();
+  }
+  makeArm2(p5,armLocation, limbSize, rotation, adjustSize = .5){
+    let cosX = p5.cos(rotation[0]);
+    let sinY = p5.sin(rotation[0]);
+    //xStationary += 1;
+    let endPoint1 = [cosX*limbSize,sinY*limbSize]
+    
+    p5.push();
+    p5.translate(armLocation[0].x, armLocation[0].y);
+    p5.line(0,0,endPoint1[0]*adjustSize,endPoint1[1]*adjustSize)
+    p5.pop();
+    
+    cosX = p5.cos(rotation[1]);
+    sinY = p5.sin(rotation[1]);
+    let newX = armLocation[0].x + endPoint1[0]*adjustSize;
+    let newY = armLocation[0].y + endPoint1[1]*adjustSize;
+    let endPoint2 = [cosX*limbSize, sinY*limbSize];
+    
+    p5.push();
+    p5.translate(newX, newY);
+    p5.line(0,0,endPoint2[0]*adjustSize,endPoint2[1]*adjustSize)
+    p5.pop();
+  }
+
+  makeLegs(p5){
+    p5.push();
+    p5.strokeWeight(5.0);
+    p5.stroke(255, 255);
+    let leftLoc = this.allLimbs.get('leftLegLoc');
+    let rightLoc = this.allLimbs.get('rightLegLoc');
+    let leftSize = this.allLimbs.get('leftLegSize');
+    let rightSize = this.allLimbs.get('rightLegSize');  
+    let leftRotation = this.allLimbs.get('leftLegRotation');
+    let rightRotation = this.allLimbs.get('rightLegRotation');
+    //makeLeg(leftLoc, leftSize, leftRotation);
+    //makeLeg(rightLoc, rightSize, rightRotation);
+    this.makeLeg2(p5, leftLoc, leftSize[1], leftRotation);
+    this.makeLeg2(p5, rightLoc, rightSize[1], rightRotation);
+    p5.pop();
+  }
+  makeLeg2(p5, legLocation, limbSize, rotation, adjustSize = .3){
+    let cosX = p5.cos(rotation[0]);
+    let sinY = p5.sin(rotation[0]);
+    //xStationary += 1;
+    let endPoint1 = [cosX*limbSize,sinY*limbSize]
+    
+    p5.push();
+    p5.translate(legLocation[0].x, legLocation[0].y);
+    p5.line(0,0,endPoint1[0]*adjustSize,endPoint1[1]*adjustSize)
+    p5.pop();
+    
+    cosX = p5.cos(rotation[1]);
+    sinY = p5.sin(rotation[1]);
+    let newX = legLocation[0].x + endPoint1[0]*adjustSize;
+    let newY = legLocation[0].y + endPoint1[1]*adjustSize;
+    let endPoint2 = [cosX*limbSize, sinY*limbSize];
+    
+    p5.push();
+    p5.translate(newX, newY);
+    p5.line(0,0,endPoint2[0]*adjustSize,endPoint2[1]*adjustSize)
+    p5.pop();
+  }
+
+  drawBody(p5){
+    p5.ellipseMode(p5.CORNER);
+    this.makeTorso(p5); 
+    this.makeHead(p5);
+    this.makeLegs(p5);
+    this.makeArms(p5);
+    this.testLimbs(p5);
+  }
+
+  testLimbs(p5){
+    let firstLimb = this.allLimbs.get('leftArmLoc');
+    p5.push();
+    p5.strokeWeight(7);
+    p5.stroke(255, 204, 0);
+    p5.point(firstLimb[0].x, firstLimb[0].y);
+    p5.point(firstLimb[1].x, firstLimb[1].y);
+    //strokeWeight(20);
+    p5.point(firstLimb[2].x, firstLimb[2].y);
+    //console.log(firstLimb[2])
+    p5.pop();
+  }
+}
+
+/*
 let allLimbs = new Map();
 let scene = 0;
 let defaultLimbs;
@@ -310,21 +490,22 @@ function jointBend(){
       
     }
     /*
-    if (armRotation > 50 || armRotation < -50){
-      speedRotation *= -1;
-    }
-    armRotation += speedRotation;
-  */
-  
+    //if (armRotation > 50 || armRotation < -50){
+    //  speedRotation *= -1;
+    //}
+    //armRotation += speedRotation;
+
     drawBody();
     pop();
   }
+  */
+ /*
   function roughPerson(){
     //roation value should always update in the rough person method. 
   
     //the person will be moving according to the speed of a song. So different set of movements for 
     //different parts of the song. 
-    /*  The song should be about 78 bpm   */
+    //  The song should be about 78 bpm   
     //for debugging, utilize a onPress method with the spacebar to cycle through the movements. 
     //There is a 1st walk, 2nd walk, pause looking up, pause looking down, free fall, etc.
     //using the scene variable to go through various scenes, increment scene each time a 
@@ -339,6 +520,8 @@ function jointBend(){
     //jointBend();
     //drawBody();
    }
+
+   */
   
   
   
