@@ -5,7 +5,7 @@
 import Sky from './Sky.js'
 import Ground from './Ground.js'
 import Rain from './Rain.js'
-//import clouds from './clouds.js';
+import Clouds from './Clouds.js';
 //
 
 
@@ -22,7 +22,8 @@ new p5(function(p5)
     this.sky = new Sky(p5, this.w, this.h);
     this.rain = new Rain(p5,this.w,this.h, this.ground.getGroundY2());
     this.rain.setRain(p5);
-    //allClouds = new clouds(p5);
+    this.clouds = new Clouds(p5,this.w,this.h);
+    this.clouds.setClouds(p5);
     //setRain();
     //setLimbs();
   }
@@ -33,6 +34,7 @@ new p5(function(p5)
     this.ground.drawGround(p5);
     this.sky.drawSky(p5);
     this.rain.drawRain(p5);
+    this.clouds.drawClouds(p5);
     //sky();
     //ground();
     //rain();

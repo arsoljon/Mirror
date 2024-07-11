@@ -1,16 +1,17 @@
 
 export default class clouds
 {
-    constructor(p5)
+    constructor(p5,width, height)
     {
         //cloud
         this.cloudMap = new Map();
         this.cloudSize = [1, 20];
         this.cloudRoll = [20,0];
-        this.cloudCount =250;
-        this.w = 450;
+        this.cloudCount = 250;
+        this.w = width;
+        this.h = height;
         //this.h = 300;
-        setClouds(p5);
+        //setClouds(p5);
     }
 
     setClouds(p5){
@@ -23,7 +24,7 @@ export default class clouds
           let off = positionMap.get('offset');
           positionMap.set('maxCluster', 10);
           let clusterSize = positionMap.get('maxCluster');
-          positionMap.set('clusterID', Math.floor(random(clusterSize)));   //clusterID represents the specific cluster of clouds this cloud will be with.
+          positionMap.set('clusterID', Math.floor(p5.random(clusterSize)));   //clusterID represents the specific cluster of clouds this cloud will be with.
       
           let id = positionMap.get('clusterID');
           let maxClusters = positionMap.get('maxCluster');
@@ -33,13 +34,13 @@ export default class clouds
           positionMap.set('xRange', xRange);
           min = 80;
           max = 90;
-          let redRange = Math.floor(map(noise(off), 0,1, min, max));
+          let redRange = Math.floor(p5.map(p5.noise(off), 0,1, min, max));
           min = 106;
           max = 130;
-          let blueRange = Math.floor(map(noise(off), 0,1, min, max))
+          let blueRange = Math.floor(p5.map(p5.noise(off), 0,1, min, max))
           min = 117;
           max = 150;
-          let greenRange = Math.floor(map(noise(off), 0,1, min, max))
+          let greenRange = Math.floor(p5.map(p5.noise(off), 0,1, min, max))
           positionMap.set('speed', (id+1)*.1);
           positionMap.set('color', [redRange, blueRange, greenRange]);
       
@@ -47,36 +48,23 @@ export default class clouds
           min = 0;
           max = this.w;
           //positionMap.set('cloudX', max - Math.floor(Math.random() * (max - min + 1)));
-          positionMap.set('cloudX', map(p5.noise(off), 0,1,0, min, max));
+          positionMap.set('cloudX', p5.map(p5.noise(off), 0,1,0, min, max));
           min = 50;
           max = 200;
           //positionMap.set('cloudY', max - Math.floor(Math.random() * (max - min + 1)));
-          positionMap.set('cloudY', map(p5.noise(off), 0,1,0, min, max));
+          positionMap.set('cloudY', p5.map(p5.noise(off), 0,1,0, min, max));
           min = 1
           max = 1000
-          positionMap.set('strokeWeight', .5 * map(p5.noise(off), 0,1,0, min, max))
+          positionMap.set('strokeWeight', .5 * p5.map(p5.noise(off), 0,1,0, min, max))
           min = 0;
           max = 10;
           this.cloudMap.set(i, positionMap);
           //every ID represent a range a cloud line is allowed to be in. 
           //This should create a cluster of lines ressembling a cloud.
         }
-        message = "CloudMap : " + this.cloudMap;
-        p5.text(message, 200,200);
-        console.log(message);
     }
 
-    cloudRespawn(i,p5){
-        let positionMap = this.cloudMap.get(i);
-        let xRange = positionMap.get('xRange');
-        let off = positionMap.get('offset');
-        let max = 0 - xRange[1];
-        let min = 0 - xRange[0];
-        let posX = map(p5.noise(off), 0,1,0, min, max)
-        return posX;
-    }
-
-    makeClouds(p5) {
+    drawClouds(p5) {
         p5.push();
         p5.fill('gray');
         //clouds should be represented by lines 
@@ -112,7 +100,7 @@ export default class clouds
             p5.stroke(500);
             p5.translate(x, y)
             if(x > this.w + this.w/6){
-                x = cloudRespawn(i,p5);
+                x = this.cloudRespawn(p5,i);
                 //cloud is at its endpoint
                 //cloudOffset = 0;
             }
@@ -126,7 +114,7 @@ export default class clouds
             p5.rect(this.cloudRoll[0],this.cloudRoll[1],this.cloudSize[0],this.cloudSize[1]);
             //add trail to the clouds
             for(let i = 0; i < history.length; ++i){
-                rect(this.cloudRoll[0]-i*5,this.cloudRoll[1]-i*1,this.cloudSize[0],this.cloudSize[1]);
+                p5.rect(this.cloudRoll[0]-i*5,this.cloudRoll[1]-i*1,this.cloudSize[0],this.cloudSize[1]);
             }
             p5.pop();
             angle += 1;
@@ -139,9 +127,15 @@ export default class clouds
             this.cloudMap.set(i, positionMap);
         }
         p5.pop();
-        message = "CloudMap : " + cloudMap;
-        p5.text(message, 200,220);
-        console.log(message);
+    }
+    cloudRespawn(p5,i){
+        let positionMap = this.cloudMap.get(i);
+        let xRange = positionMap.get('xRange');
+        let off = positionMap.get('offset');
+        let max = 0 - xRange[1];
+        let min = 0 - xRange[0];
+        let posX = p5.map(p5.noise(off), 0,1,0, min, max)
+        return posX;
     }
 }
 
