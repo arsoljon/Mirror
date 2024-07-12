@@ -1,3 +1,181 @@
+
+export default class Scenes
+{
+  constructor(p5,person){
+    this.scene = 0;
+    this.allLimbs = person;
+  }
+  playScenes(p5){
+    this.sceneNumber = 0;
+    if (this.sceneNumber == 0){
+      //noStroke();
+      //fill('white');
+      this.sceneOne(p5);
+    }
+    //drawBody();
+  }
+  sceneOne(p5,head_goal, leg_goal, arm_goal, angle1, angle2){
+    p5.push();
+    //hands in pocket
+    //This function should set the position of all body parts. 
+    // *^head(-,-) x-coord should be slightly right. y-coord should be slightly down.
+    // torso(-,-) as of now the torso will remain upright.
+    // *^leftarm(90,90) 
+    // *^rightarm(-,-) should align with torso to hide.
+    // *~leftLeg and rightleg will mimic walking. 
+    // * limbs that will be altered.
+    // ^ limbs that will lock into only one location
+    // ~ limbs that will continue moving 
+    // keep nextScene boolean variable to trigger the next scene.
+    let nextScene = false;
+    let torsoLoc = this.allLimbs.get("torsoLoc");
+    let leftLegLoc = this.allLimbs.get("leftLegLoc");
+    let rightLegLoc = this.allLimbs.get("rightLegLoc");
+    let leftLegFreeze = this.allLimbs.get("leftLegFreeze");
+    let rightLegFreeze = this.allLimbs.get("rightLegFreeze");
+    
+    //Alter Head
+    let headLoc = this.allLimbs.get("headLoc");
+    let headFreeze = this.allLimbs.get("headFreeze");
+    let maxHeadOffset = [-15,-15];
+    let headGoal = [torsoLoc[0].x + maxHeadOffset[0], torsoLoc[0].y + maxHeadOffset[1]];
+    if(headFreeze == false){
+      let speed = 0.1;
+      headLoc.x += speed;
+      headLoc.y += speed;
+    }
+    if(headLoc.x >= headGoal[0] && headLoc.y >= headGoal[1]){
+      headFreeze = true;
+    }
+    //Alter Arms
+    let leftArmLoc = this.allLimbs.get("leftArmLoc");
+    let rightArmLoc = this.allLimbs.get("rightArmLoc");
+    let leftArmSize = this.allLimbs.get('leftArmSize');
+    let rightArmSize = this.allLimbs.get('rightArmSize');
+    let leftArmRotation = this.allLimbs.get('leftArmRotation');
+    let rightArmRotation = this.allLimbs.get('rightArmRotation');
+    let leftLegRotation = this.allLimbs.get('leftLegRotation');
+    let rightLegRotation = this.allLimbs.get('rightLegRotation');
+    let leftArmFreeze = this.allLimbs.get("leftArmFreeze");
+    let rightArmFreeze = this.allLimbs.get("rightArmFreeze");
+    let movingForward = this.allLimbs.get("movingForward");
+    //right
+    let rightArmOffset = 5;
+    let rightArmGoal = torsoLoc[0].x+rightArmOffset; //torsoLoc only has one (x,y).
+    if(rightArmLoc[0].x > rightArmGoal && rightArmFreeze == false){
+      let speed = 0.1;
+      rightArmLoc[0].x -= speed;
+      rightArmLoc[1].x -= speed;
+      rightArmLoc[2].x -= speed;
+    }
+    if(rightArmLoc[0].x <= rightArmGoal){
+      rightArmFreeze = true;
+    }
+    //left
+    let leftArmGoal = [120,60];
+    if(leftArmRotation[0] < leftArmGoal[0] ){
+      let speed = 1;
+      leftArmRotation[0] += speed;
+    }
+    if(leftArmRotation[1] > leftArmGoal[1]){
+      let speed = -1;
+      leftArmRotation[1] += speed;
+    }
+  
+    //Alter Legs 
+    let legOffset = 20; 
+    let maxLegMovement = [135-legOffset,45+legOffset];
+    let legSpeed = [0.7,0.5];
+    //right
+    //forward - lead with top limb.
+    
+    if(movingForward == true){
+      if(rightLegRotation[0] > maxLegMovement[1]){
+        rightLegRotation[0] -= legSpeed[0];
+      }
+      if(rightLegRotation[1] > maxLegMovement[1]){
+        rightLegRotation[1] -= legSpeed[1];
+      }
+      if(leftLegRotation[0] < maxLegMovement[0]){
+        leftLegRotation[0] += legSpeed[1];
+      }
+      if(leftLegRotation[1] < maxLegMovement[0]){
+        leftLegRotation[1] += legSpeed[0];
+      }
+      if(rightLegRotation[1] <= maxLegMovement[1]+legOffset/4){
+        movingForward = !movingForward;
+      }
+    }
+    else{
+      if(rightLegRotation[0] < maxLegMovement[0]){
+        rightLegRotation[0] += legSpeed[1];
+      }
+      if(rightLegRotation[1] < maxLegMovement[0]){
+        rightLegRotation[1] += legSpeed[0];
+      }
+      if(leftLegRotation[0] > maxLegMovement[1]){
+        leftLegRotation[0] -= legSpeed[0];
+      }
+      if(leftLegRotation[1] > maxLegMovement[1]){
+        leftLegRotation[1] -= legSpeed[1];
+      }
+      if(leftLegRotation[1] <= maxLegMovement[1]){
+        movingForward = !movingForward;
+      }
+    }
+    
+  
+  
+    let goal_angle1 = 90;
+    let goal_angle2 = 90;
+    let speed1 = 0;
+    let speed2 = 0;
+    let change1 = 0.8;
+    let change2 = 0.9;
+    if(angle1 >= goal_angle1){
+      speed1 = -change1;
+    }
+    else if(angle1 <= goal_angle1){
+      speed1 = change1;    
+    }
+    if(angle2 >= goal_angle2){
+      speed2 = -change2;
+    }
+    else if(angle2 <= goal_angle2){
+      speed2 = change2;
+    }
+    if(angle1 <= (goal_angle1 + change1) && angle1 >= (goal_angle1 - change1)){
+      angle1 = goal_angle1; 
+      speed1 = 0;
+    }
+    if(angle2 <= (goal_angle2 + change2) && angle2 >= (goal_angle2 - change2)){
+      angle2 = goal_angle2;
+      speed2 = 0;
+     }
+    angle1 += speed1;
+    angle2 += speed2;
+  
+    this.allLimbs.set("headLoc", headLoc);
+    this.allLimbs.set("leftLegLoc",leftLegLoc);
+    this.allLimbs.set("rightLegLoc", rightLegLoc);
+    this.allLimbs.set("leftArmLoc", leftArmLoc);
+    this.allLimbs.set("rightArmLoc", rightArmLoc);
+    this.allLimbs.set("leftArmRotation", leftArmRotation);
+    this.allLimbs.set("leftLegRotation", leftLegRotation);
+    this.allLimbs.set("rightLegRotation", rightLegRotation);
+    this.allLimbs.set("headFreeze", headFreeze);
+    this.allLimbs.set("leftLegFreeze", leftLegFreeze);
+    this.allLimbs.set("rightLegFreeze", rightLegFreeze);
+    this.allLimbs.set("rightArmFreeze", rightArmFreeze);
+    this.allLimbs.set("leftArmFreeze", leftArmFreeze);
+    this.allLimbs.set("movingForward", movingForward);
+    p5.pop();
+  }
+  getPerson(){
+    return this.allLimbs;
+  }
+}
+
 let scene = 0;
 
 function playScenes(){

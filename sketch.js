@@ -7,6 +7,7 @@ import Ground from './Ground.js'
 import Rain from './Rain.js'
 import Clouds from './Clouds.js';
 import Person from './Person.js'
+import Scenes from './Scenes.js'
 //
 
 
@@ -27,6 +28,7 @@ new p5(function(p5)
     this.clouds.setClouds(p5);
     this.person = new Person(p5);
     this.person.setLimbs(p5);
+    this.scenes = new Scenes(p5,this.person.getPerson());
     //setRain();
     //setLimbs();
   }
@@ -38,7 +40,11 @@ new p5(function(p5)
     this.sky.drawSky(p5);
     this.rain.drawRain(p5);
     this.clouds.drawClouds(p5);
+    this.scenes.playScenes(p5)
+    this.person.updatePerson(p5, this.scenes.getPerson());
     this.person.drawBody(p5);
+    
+    //this.person = Scenes.getNewPosition();
     //sky();
     //ground();
     //rain();

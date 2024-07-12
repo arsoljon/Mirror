@@ -176,6 +176,12 @@ export default class Person
     //console.log(firstLimb[2])
     p5.pop();
   }
+  getPerson(){
+    return this.allLimbs;
+  }
+  updatePerson(p5, person){
+    this.allLimbs = person;
+  }
 }
 
 /*
