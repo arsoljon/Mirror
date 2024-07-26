@@ -20,8 +20,11 @@ export default class Scenes
     p5.push();
     let start = this.allLimbs.get('startingPoint');
     let y = this.ground[0].y;
+    let x = start.x;
+    let speed = 0.2;
+    x += speed;
     let height = this.ground[1].y;
-    let startingPoint = p5.createVector(start.x, y-(height*.7));
+    let startingPoint = p5.createVector(x, y-(height*.7));
 
     //hands in pocket
     //This function should set the position of all body parts. 
