@@ -1,9 +1,10 @@
 
 export default class Scenes
 {
-  constructor(p5,person){
+  constructor(p5,person,defaultPerson){
     this.scene = 0;
     this.allLimbs = person;
+    this.defaultLimbs = defaultPerson;
   }
   playScenes(p5){
     this.sceneNumber = 0;
@@ -13,6 +14,20 @@ export default class Scenes
       this.sceneOne(p5);
     }
     //drawBody();
+  }
+  getDefaultLimbs(){
+    return this.defaultLimbs;
+  }
+  setScenes(p5){
+    let allScenes = new Map();
+    let scene1 = new Map();
+    let torso = this.allLimbs('torso');
+    scene1.set('torso');
+    allScenes.set('1', new Map());
+    allScenes.set('2');
+    allScenes.set('3');
+    allScenes.set('1')
+    
   }
   sceneOne(p5,head_goal, leg_goal, arm_goal, angle1, angle2){
     p5.push();
@@ -29,14 +44,92 @@ export default class Scenes
     // keep nextScene boolean variable to trigger the next scene.
     let nextScene = false;
     let torsoLoc = this.allLimbs.get("torsoLoc");
+    let headLoc = this.allLimbs.get("headLoc");
     let leftLegLoc = this.allLimbs.get("leftLegLoc");
     let rightLegLoc = this.allLimbs.get("rightLegLoc");
     let leftLegFreeze = this.allLimbs.get("leftLegFreeze");
     let rightLegFreeze = this.allLimbs.get("rightLegFreeze");
+    let headFreeze = this.allLimbs.get("headFreeze");
+    /*
+    //Alter torso
+    //neck-forward
+    let neck = this.allLimbs.get('torsoMap').get('neck');
+    let originalNeck = new Map();
+    originalNeck = this.getDefaultLimbs();
+    originalNeck = originalNeck.get('torsoMap').get('neck');
+    const p1 = [originalNeck[0].x+6,
+    originalNeck[0].y+0];
+    const neckGoal = [originalNeck[0].x+6,
+                    originalNeck[0].y+0,
+                    originalNeck[1].x+3,
+                    originalNeck[1].y+3,
+                    originalNeck[2].x+3,
+                    originalNeck[2].y+5]
+    console.log(originalNeck)
+    //console.log(originalNeck[0].x)
+    let neckChange = 0;
+    if(neck[0].x < neckGoal[0]){
+      neck[0].x += neckChange;
+      let msg1 = 'neck0.x = ' + neck[0].x;
+      let msg2 = 'neckGoal0 = ' + neckGoal[0];
+      console.log(msg1)
+      console.log(msg2)
+    }
+    else{
+      if(neck[0].y < neckGoal[1]){
+        neck[0].y+= neckChange;
+      }
+      else{
+        if(neck[1].x < neckGoal[2]){
+          neck[1].x+= neckChange;
+        }
+        else{
+          if(neck[1].y < neckGoal[3]){
+            neck[1].y+= neckChange;
+          }
+          else{
+            if(neck[2].x < neckGoal[4]){
+              neck[2].x+= neckChange;
+            }
+            else{
+              if(neck[2].y < neckGoal[5]){
+                neck[2].y+= neckChange;
+              }
+              else{
+                neckChange = 0;
+              }
+                        
+            }
+          }
+        }
+      }
+    }
+
+
+
+
+    if(neck[0].x > neckGoal[0]){
+      console.log('1')
+    }
+    if(neck[0].y > neckGoal[1]){
+      console.log('2')
+    }
+    if(neck[1].x > neckGoal[2]){
+      console.log('3')
+    }
+    if(neck[1].y > neckGoal[3]){
+      console.log('4')
+    }
+    if(neck[2].x > neckGoal[4]){
+      console.log('5')
+    }
+    if(neck[2].y > neckGoal[5]){
+      console.log('6')
+    }
+
+*/
     
     //Alter Head
-    let headLoc = this.allLimbs.get("headLoc");
-    let headFreeze = this.allLimbs.get("headFreeze");
     let maxHeadOffset = [-15,-15];
     let headGoal = [torsoLoc[0].x + maxHeadOffset[0], torsoLoc[0].y + maxHeadOffset[1]];
     if(headFreeze == false){
@@ -169,6 +262,8 @@ export default class Scenes
     this.allLimbs.set("rightArmFreeze", rightArmFreeze);
     this.allLimbs.set("leftArmFreeze", leftArmFreeze);
     this.allLimbs.set("movingForward", movingForward);
+    //torsoMap.set('neck',neck);
+    //this.allLimbs.set('torsoMap',torsoMap);
     p5.pop();
   }
   getPerson(){
