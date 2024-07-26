@@ -19,6 +19,11 @@ export default class Ground {
   getGroundY2(){
     return this.groundY2;
   }
+  getGround(p5){
+    let c1 = p5.createVector(0,this.groundY1)
+    let c2 = p5.createVector(this.w,this.groundY2)
+    return [c1, c2]
+  }
 }
 /*
 function ground() {

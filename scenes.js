@@ -1,9 +1,11 @@
 
 export default class Scenes
 {
-  constructor(p5,person){
+  constructor(p5,person, ground){
     this.scene = 0;
     this.allLimbs = person;
+    this.ground = ground;
+    console.log(this.ground);
   }
   playScenes(p5){
     this.sceneNumber = 0;
@@ -16,6 +18,11 @@ export default class Scenes
   }
   sceneOne(p5,head_goal, leg_goal, arm_goal, angle1, angle2){
     p5.push();
+    let start = this.allLimbs.get('startingPoint');
+    let y = this.ground[0].y;
+    let height = this.ground[1].y;
+    let startingPoint = p5.createVector(start.x, y-(height*.7));
+
     //hands in pocket
     //This function should set the position of all body parts. 
     // *^head(-,-) x-coord should be slightly right. y-coord should be slightly down.
@@ -169,6 +176,7 @@ export default class Scenes
     this.allLimbs.set("rightArmFreeze", rightArmFreeze);
     this.allLimbs.set("leftArmFreeze", leftArmFreeze);
     this.allLimbs.set("movingForward", movingForward);
+    this.allLimbs.set("startingPoint", startingPoint);
     p5.pop();
   }
   getPerson(){

@@ -12,11 +12,12 @@ export default class Person
     //torso has 5 joints connected to head, right leg and arm,  left leg and arm.
     //one arm has 2 limbs. the top arm has 2 joints, the forearm has one joint.
     //one leg has 2 limbs. the top leg has 2 joints, the shin has one joint.  
-    let headLoc = p5.createVector(138,100);
+    let start = p5.createVector(0,0);
+    let headLoc = p5.createVector(start.x,start.y);
     let armSize = 25;
     let legSize = 50;
     let armOffsetY = 28;
-    let legOffsetY = (headLoc.y/2)+10;
+    let legOffsetY = (headLoc.y/2)+60;
   
     this.allLimbs.set('headLoc', headLoc);
     this.allLimbs.set('torsoLoc', [p5.createVector(headLoc.x+7,headLoc.y+20), p5.createVector(headLoc.x+7,headLoc.y+20+45)]);
@@ -43,6 +44,7 @@ export default class Person
     this.allLimbs.set('leftLegFreeze', false);
     this.allLimbs.set('rightLegFreeze', false);
     this.allLimbs.set('movingForward', false);
+    this.allLimbs.set("startingPoint", start);
     this.defaultLimbs = this.allLimbs;
     p5.pop();
   }
@@ -157,6 +159,8 @@ export default class Person
 
   drawBody(p5){
     p5.ellipseMode(p5.CORNER);
+    let start = this.allLimbs.get('startingPoint');
+    p5.translate(start.x,start.y);
     this.makeTorso(p5); 
     this.makeHead(p5);
     this.makeLegs(p5);

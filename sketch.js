@@ -28,7 +28,7 @@ new p5(function(p5)
     this.clouds.setClouds(p5);
     this.person = new Person(p5);
     this.person.setLimbs(p5);
-    this.scenes = new Scenes(p5,this.person.getPerson());
+    this.scenes = new Scenes(p5,this.person.getPerson(), this.ground.getGround(p5));
     //setRain();
     //setLimbs();
   }
