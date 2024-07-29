@@ -5,7 +5,9 @@ export default class Ground {
     //ground should be 1/4th the size of screen
     this.w = width;
     this.h = height;
-    //ground
+    //ground 
+    //groundY1 is the y coordinate starting point
+    //groundY2 is the height value of the rect shape
     this.groundY1 = this.h-(this.h/4);
     this.groundY2 = this.h/4;
     this.groundColor = ('#ab7b66')

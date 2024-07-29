@@ -4,6 +4,7 @@ export default class Scenes
   constructor(p5,person, ground){
     this.scene = 0;
     this.allLimbs = person;
+    this.sceneComplete = this.allLimbs.get('sceneComplete')
     this.ground = ground;
     console.log(this.ground);
   }
@@ -12,17 +13,30 @@ export default class Scenes
     if (this.sceneNumber == 0){
       //noStroke();
       //fill('white');
-      this.sceneOne(p5);
+      if(this.sceneComplete == false){
+        this.sceneOne(p5);
+      }
+      else{
+        this.transitionOne(p5);
+      }
     }
     //drawBody();
+  }
+
+  transitionOne(p5){
+    
   }
   sceneOne(p5,head_goal, leg_goal, arm_goal, angle1, angle2){
     p5.push();
     let start = this.allLimbs.get('startingPoint');
     let y = this.ground[0].y;
     let x = start.x;
-    let speed = 0.2;
-    x += speed;
+    let horizontal_speed = 0.3; //0.3
+    //let v1 = p5.map(horizontal_speed, 0.3, 1, .7, 1);
+    //let v2 = p5.map(horizontal_speed, 0.3, 1, .5, .8);
+    //let msg = `right : ${v1}, left : ${v2}`;
+    //console.log(msg);
+    x += horizontal_speed;
     let height = this.ground[1].y;
     let startingPoint = p5.createVector(x, y-(height*.7));
 
@@ -68,7 +82,7 @@ export default class Scenes
     let rightLegRotation = this.allLimbs.get('rightLegRotation');
     let leftArmFreeze = this.allLimbs.get("leftArmFreeze");
     let rightArmFreeze = this.allLimbs.get("rightArmFreeze");
-    let movingForward = this.allLimbs.get("movingForward");
+
     //right
     let rightArmOffset = 5;
     let rightArmGoal = torsoLoc[0].x+rightArmOffset; //torsoLoc only has one (x,y).
@@ -93,13 +107,17 @@ export default class Scenes
     }
   
     //Alter Legs 
+    let movingForward = this.allLimbs.get("movingForward");
     let legOffset = 20; 
     let maxLegMovement = [135-legOffset,45+legOffset];
-    let legSpeed = [0.7,0.5];
+    let legSpeed = [0.7,0.5]; //Default: [0.7, 0.5] - diff of .2 ; Horizontal speed of 0.3
+    //let legSpeed = [v1, v2];
     //right
     //forward - lead with top limb.
     
     if(movingForward == true){
+      //maxLegMovement prevents limbs from rotating faster than previous or subsequent limbs.
+      //Leading to the legs straightening out towards the complete, forward and backward extension.
       if(rightLegRotation[0] > maxLegMovement[1]){
         rightLegRotation[0] -= legSpeed[0];
       }
@@ -180,6 +198,11 @@ export default class Scenes
     this.allLimbs.set("leftArmFreeze", leftArmFreeze);
     this.allLimbs.set("movingForward", movingForward);
     this.allLimbs.set("startingPoint", startingPoint);
+
+    console.log(this.ground[1].x)
+    if(x > this.ground[1].x/3){
+      this.sceneComplete = true;
+    }
     p5.pop();
   }
   getPerson(){

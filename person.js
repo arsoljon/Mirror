@@ -45,6 +45,7 @@ export default class Person
     this.allLimbs.set('rightLegFreeze', false);
     this.allLimbs.set('movingForward', false);
     this.allLimbs.set("startingPoint", start);
+    this.allLimbs.set('sceneComplete', false);
     this.defaultLimbs = this.allLimbs;
     p5.pop();
   }
@@ -135,6 +136,7 @@ export default class Person
     p5.pop();
   }
   makeLeg2(p5, legLocation, limbSize, rotation, adjustSize = .3){
+    let speed = 2;
     let cosX = p5.cos(rotation[0]);
     let sinY = p5.sin(rotation[0]);
     //xStationary += 1;
