@@ -18,8 +18,8 @@ export default class Angled_Hatching{
 
 class Hatch{
     constructor(p5, width_, length_){
-        this.x = width_;
-        this.y = length_;
+        this.x = width_*2;
+        this.y = length_*2;
         this.hatch = [];
         this.maxCount = 10;
         this.horizontal_speed = 0;
@@ -55,8 +55,8 @@ class Particle{
         p5.noStroke();
         p5.fill(this.fill[0], this.fill[1], this.fill[2], this.alpha);
         p5.angleMode(p5.DEGREES);
-        p5.rotate(-45);
         p5.translate(this.boundary[0].x,this.boundary[0].y)
+        p5.rotate(-25);
         p5.ellipse(0,0, this.size.x, this.size.y);
         p5.pop();
         this.resetParticle(p5,h_speed);
@@ -67,12 +67,17 @@ class Particle{
         this.alpha -= this.alphaChange;
         if(this.boundary[0].y > this.boundary[1].y){
             this.boundary[0].y = 0;
+            this.boundary[0].x = this.initialX;
+
+            console.log("got em!")
         }
-        if(this.boundary[0].x > this.boundary[1].x){
-            this.boundary[0].x = 0;
+        if(this.boundary[0].x > p5.width){
+            this.boundary[0].x = this.initialX;
+            this.boundary[0].y = 0;
+            console.log("yo!");
         }
         let msg = `boundary1x : ${this.boundary[0].y}  boundary2x : ${this.boundary[1].y}`
-        console.log(msg);
+        //console.log(msg);
         if(this.alpha > 255 || this.alpha < 0){
             this.alphaChange *= -1;
         }
