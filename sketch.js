@@ -8,7 +8,8 @@ import Rain from './Rain.js'
 import Clouds from './Clouds.js';
 import Person from './Person.js'
 import Scenes from './Scenes.js'
-import Horizontal_Hatching from './Hatching.js'
+import Vertical_Hatching from './hatching/vertical_hatching.js'
+import Angled_Hatching from './hatching/angled_hatching.js';
 
 
 
@@ -26,7 +27,8 @@ new p5(function(p5)
     this.rain.setRain(p5);
     this.clouds = new Clouds(p5,this.w,this.h);
     this.clouds.setClouds(p5);
-    this.horizontal_hatching = new Horizontal_Hatching(p5, this.w, this.h);
+    this.vertical_hatching = new Vertical_Hatching(p5, this.w, this.h);
+    this.angled_hatching = new Angled_Hatching(p5, this.w, this.h);
     this.person = new Person(p5);
     this.person.setLimbs(p5);
     this.scenes = new Scenes(p5,this.person.getPerson());
@@ -44,7 +46,8 @@ new p5(function(p5)
     this.scenes.playScenes(p5)
     this.person.updatePerson(p5, this.scenes.getPerson());
     this.person.drawBody(p5);
-    this.horizontal_hatching.drawHatching(p5);
+    this.vertical_hatching.drawHatching(p5);
+    this.angled_hatching.drawHatching(p5);
     
     //this.person = Scenes.getNewPosition();
     //sky();
