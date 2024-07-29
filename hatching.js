@@ -1,4 +1,4 @@
-export default class Hatching{
+export default class Horizontal_Hatching{
     constructor(p5, w, l){  
         this.width = w;
         this.length = l;
@@ -18,21 +18,23 @@ export default class Hatching{
 
 class Hatch{
     constructor(p5, width_, length_){
-        this.width = width_;
-        this.length = length_;
+        this.x = width_;
+        this.y = length_;
         this.hatch = [];
         this.maxCount = 50;
+        this.horizontal_speed = 0.2;
         for(let i = 0; i < this.maxCount; i++){
-            let start = p5.createVector(this.width, p5.random(0,this.length));
-            let end = p5.createVector(this.width, this.length);
+            let start = p5.createVector(this.x, p5.random(0,this.y));
+            let end = p5.createVector(this.x, this.y);
             let particle = new Particle(p5, start, end);
             this.hatch.push(particle);
         }
     }
     drawHatch(p5){
         for(let i = 0; i < this.maxCount; i++){
-            this.hatch[i].drawParticle(p5);
+            this.hatch[i].drawParticle(p5, this.horizontal_speed);
         }
+
     }
 }
 
@@ -45,19 +47,23 @@ class Particle{
         this.fill = [101, 101, 98];
         this.alphaChange = 0.9;
     }
-    drawParticle(p5){
+    drawParticle(p5,h_speed){
         p5.push();
         p5.noStroke();
         p5.fill(this.fill[0], this.fill[1], this.fill[2], this.alpha);
         p5.ellipse(this.boundary[0].x,this.boundary[0].y, this.size.x, this.size.y);
         p5.pop();
-        this.resetParticle(p5);
+        this.resetParticle(p5,h_speed);
     }
-    resetParticle(p5){
+    resetParticle(p5,h_speed){
         this.boundary[0].y += this.speed;
+        this.boundary[0].x -= h_speed;
         this.alpha -= this.alphaChange;
         if(this.boundary[0].y > this.boundary[1].y){
             this.boundary[0].y = 0-this.size.y;
+        }
+        if(this.boundary[0].x < 0){
+            this.boundary[0].x = p5.width;
         }
         if(this.alpha > 255 || this.alpha < 0){
             this.alphaChange *= -1;
