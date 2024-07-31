@@ -1,5 +1,5 @@
 export default class Vertical_Hatching{
-    constructor(p5, w, l){  
+    constructor(p5, w = p5.width, l = p5.length){  
         this.width = w;
         this.length = l;
         this.allHatches = [];
