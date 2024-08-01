@@ -39,15 +39,15 @@ new p5(function(p5)
   p5.draw = function()
   {
     p5.background(0,0);
-    this.ground.drawGround(p5);
     this.sky.drawSky(p5);
+    this.angled_hatching.drawHatching(p5);
+    this.ground.drawGround(p5);
     this.rain.drawRain(p5);
     this.clouds.drawClouds(p5);
     this.scenes.playScenes(p5)
     this.person.updatePerson(p5, this.scenes.getPerson());
     this.person.drawBody(p5);
     this.vertical_hatching.drawHatching(p5);
-    this.angled_hatching.drawHatching(p5);
     
     //this.person = Scenes.getNewPosition();
     //sky();

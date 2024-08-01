@@ -21,7 +21,7 @@ class Hatch{
         this.x = width_;
         this.y = length_;
         this.hatch = [];
-        this.maxCount = 50;
+        this.maxCount = 20;
         this.horizontal_speed = 0.2;
         for(let i = 0; i < this.maxCount; i++){
             let start = p5.createVector(this.x, p5.random(0,this.y));
@@ -40,7 +40,7 @@ class Hatch{
 
 class Particle{
     constructor(p5, start, end){
-        this.size = p5.createVector(2,20);
+        this.size = p5.createVector(1,40);
         this.boundary = [start, end];
         this.speed = p5.random(0.2,0.6);
         this.alpha = p5.random(0,255);
