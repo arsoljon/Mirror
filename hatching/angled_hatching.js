@@ -53,12 +53,13 @@ class Particle{
     this.angle = 45;
     this.xSpeed = p5.random(1,2);
     this.ySpeed = this.xSpeed;
-    this.alpha = p5.random(0,20);
+    this.alpha = p5.random(0,255);
     this.fill = [101, 101, 98];
     this.alphaChange = p5.random(0.5, 1);
   }
   drawParticle(p5,h_speed){
     p5.push();
+    p5.noStroke();
     p5.translate(this.loc.x, this.loc.y);
     p5.rotate(-this.angle);
     p5.fill(this.fill[0], this.fill[1], this.fill[2], this.alpha);
