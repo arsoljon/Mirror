@@ -51,21 +51,23 @@ export default class Person
   }
 
   makeHead(p5){
+    p5.push();
     p5.strokeWeight(0);
     p5.stroke(255, 255);
     let loc = this.allLimbs.get('headLoc');
     let size = this.allLimbs.get('headSize');
-    p5.push();
+    
     p5.translate(loc.x,loc.y);
     p5.ellipse(0,0,size[0],size[1]);
     p5.pop();
   }
   makeTorso(p5){
+    p5.push();
     p5.strokeWeight(0);
     p5.stroke(255, 255);
     let loc = this.allLimbs.get('torsoLoc');
     let size = this.allLimbs.get('torsoSize');
-    p5.push();
+    
     p5.translate(loc[0].x,loc[0].y);
     p5.ellipse(0,0,size[0],size[1]);
     p5.pop();
@@ -97,6 +99,7 @@ export default class Person
     p5.pop();
   }
   makeArm2(p5,armLocation, limbSize, rotation, adjustSize = .5){
+    p5.push();
     let cosX = p5.cos(rotation[0]);
     let sinY = p5.sin(rotation[0]);
     //xStationary += 1;
@@ -117,6 +120,7 @@ export default class Person
     p5.translate(newX, newY);
     p5.line(0,0,endPoint2[0]*adjustSize,endPoint2[1]*adjustSize)
     p5.pop();
+    p5.pop();
   }
 
   makeLegs(p5){
@@ -136,6 +140,7 @@ export default class Person
     p5.pop();
   }
   makeLeg2(p5, legLocation, limbSize, rotation, adjustSize = .3){
+    p5.push();
     let speed = 2;
     let cosX = p5.cos(rotation[0]);
     let sinY = p5.sin(rotation[0]);
@@ -157,9 +162,11 @@ export default class Person
     p5.translate(newX, newY);
     p5.line(0,0,endPoint2[0]*adjustSize,endPoint2[1]*adjustSize)
     p5.pop();
+    p5.pop();
   }
 
   drawBody(p5){
+    p5.push();
     p5.ellipseMode(p5.CORNER);
     let start = this.allLimbs.get('startingPoint');
     p5.translate(start.x,start.y);
@@ -168,6 +175,7 @@ export default class Person
     this.makeLegs(p5);
     this.makeArms(p5);
     this.testLimbs(p5);
+    p5.pop();
   }
 
   testLimbs(p5){
