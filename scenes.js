@@ -13,12 +13,15 @@ export default class Scenes
     if (this.sceneNumber == 0){
       //noStroke();
       //fill('white');
+      /*
       if(this.sceneComplete == false){
         this.sceneOne(p5);
       }
       else{
         this.transitionOne(p5);
       }
+        */
+      this.sceneOne(p5);
     }
     //drawBody();
   }
@@ -31,11 +34,14 @@ export default class Scenes
     let start = this.allLimbs.get('startingPoint');
     let y = this.ground[0].y;
     let x = start.x;
-    let horizontal_speed = 0.3; //0.3
+    let horizontal_speed = 0.08; //0.3
     //let v1 = p5.map(horizontal_speed, 0.3, 1, .7, 1);
     //let v2 = p5.map(horizontal_speed, 0.3, 1, .5, .8);
     //let msg = `right : ${v1}, left : ${v2}`;
     //console.log(msg);
+    if(this.sceneComplete == true){
+      horizontal_speed = 0;
+    }
     x += horizontal_speed;
     let height = this.ground[1].y;
     let startingPoint = p5.createVector(x, y-(height*.7));
