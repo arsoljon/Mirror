@@ -6,7 +6,6 @@ export default class Scenes
     this.allLimbs = person;
     this.sceneComplete = this.allLimbs.get('sceneComplete')
     this.ground = ground;
-    console.log(this.ground);
   }
   playScenes(p5){
     this.sceneNumber = 0;
@@ -204,8 +203,6 @@ export default class Scenes
     this.allLimbs.set("leftArmFreeze", leftArmFreeze);
     this.allLimbs.set("movingForward", movingForward);
     this.allLimbs.set("startingPoint", startingPoint);
-
-    console.log(this.ground[1].x)
     if(x > this.ground[1].x/3){
       this.sceneComplete = true;
     }
