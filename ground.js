@@ -1,10 +1,14 @@
 
 
 export default class Ground {
-  constructor(p5,width, height){
+  constructor(p5,width, height, i){
     //ground should be 1/4th the size of screen
     this.w = width;
     this.h = height;
+    this.canvasLocation = i;
+    //gc is the groundCanvas that holds all the graphics for the ground
+    //use gc to reduce amount of drawing overhead. 
+    this.gc = p5.createGraphics(this.w,this.h);
     //ground 
     //groundY1 is the y coordinate starting point
     //groundY2 is the height value of the rect shape
@@ -22,15 +26,16 @@ export default class Ground {
     let rockLoc = p5.createVector(this.w/3,this.h-(this.groundY2 / 2)-this.size2*2)
     let grassLoc = p5.createVector(p5.random(0, this.w),p5.random((this.h - this.h/4+20), this.h));
     this.loc = [grassLoc, rockLoc, dirtLoc]
-    this.maxBushels = 10;
+    this.maxBushels = 500;
     this.setupGrass(p5, this.maxBushels);
   }
   drawGround(p5){
-    p5.push();
-    p5.fill(this.groundColor);
-    p5.rect(0, this.groundY1, this.w,this.groundY2);
-    this.drawGroundCover(p5);
-    p5.pop();
+    this.gc.push();
+    this.gc.noStroke();
+    this.gc.fill(this.groundColor);
+    this.gc.rect(0, this.groundY1, this.w,this.groundY2);
+    this.drawGroundCover(this.gc);
+    this.gc.pop();
   }
   getGroundY2(){
     return this.groundY2;
@@ -39,6 +44,15 @@ export default class Ground {
     let c1 = p5.createVector(0,this.groundY1)
     let c2 = p5.createVector(this.w,this.groundY2)
     return [c1, c2]
+  }
+  getCanvas(){
+    return this.gc;
+  }
+  getCanvasLocation(){
+    return this.canvasLocation;
+  }
+  setCanvasLocation(i){
+    this.canvasLocation = i;
   }
 
   drawGroundCover(p5){
