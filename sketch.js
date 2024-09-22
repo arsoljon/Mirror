@@ -53,11 +53,7 @@ new p5(function(p5)
     //this.groundCanvas.clear()
     this.sky.drawSky(p5);
     this.angled_hatching.drawHatching(p5);
-    this.i-=0.9;
-    if (this.i < -this.w){
-      this.i = this.w;
-    }
-    this.updateGroundCover(p5,0.9);
+    this.updateGroundCover(p5,0.14);
     p5.image(this.groundCanvas1, this.ground1.getCanvasLocation(), 0);
     p5.image(this.groundCanvas2, this.ground2.getCanvasLocation(), 0);
     //this.ground.drawGround(p5, this.groundCanvas);
