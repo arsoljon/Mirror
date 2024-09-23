@@ -27,7 +27,7 @@ export default class Ground {
     let rockLoc = p5.createVector(this.w/3,this.h-(this.groundY2 / 2)-this.size2*2)
     let grassLoc = p5.createVector(p5.random(0, this.w),p5.random((this.h - this.h/4+20), this.h));
     this.loc = [grassLoc, rockLoc, dirtLoc]
-    this.maxBushels = 20;
+    this.maxBushels = 600;
     this.setupGrass(p5, this.maxBushels);
   }
   drawGround(p5){
@@ -111,21 +111,25 @@ export default class Ground {
     //single blade has 5 points
     //double blades have 9 points
     //triple blades have 13 points
+    //x_offset changes width of blades
+    //y_offset changes height of blades
     let pointCount = 5;
     let distance = this.size1 + 10;
-    let x_offset = 0.05;
-    let y_offset = .2;
+    let x_offset = 0.03;
+    let y_offset = .1;
     let xRange = [1,distance*x_offset];
     let yRange = [1,distance*y_offset];
     let listOfSingles = []
     let listOfDoubles = []
     let listOfTriples = []
-
+    let maxSingles = maxCount/2;
+    let maxDoubles = maxSingles/2;
+    let maxTriples = maxDoubles/3;
     let lowestPoint = -1;
     //single
-    for(let j = 0; j < maxCount/3; ++j){
+    for(let j = 0; j < maxSingles; ++j){
       this.bushel = []
-      let subPoint = p5.createVector(p5.random(0, this.w),p5.random((this.h - this.h/4+20), this.h));
+      let subPoint = p5.createVector(p5.random(0, this.w),p5.random((this.h - (this.h*.24)), this.h));
       for(let p = 0; p < pointCount; ++p){
         let xChange = p5.random(xRange[0], xRange[1]);
         let yChange = p5.random(yRange[0], yRange[1]);
@@ -138,7 +142,10 @@ export default class Ground {
           subPoint.y -= yChange;
           //console.log(`going up: ${subPoint}`)
         }
-        let next = p5.createVector(subPoint.x, subPoint.y)
+        //simplify the x and y values
+        let x = Math.trunc(subPoint.x * 10) / 10;
+        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
       //make sure the height, y-value, is the same for the first and last grass blades.
@@ -148,13 +155,13 @@ export default class Ground {
       else{
         lowestPoint = this.bushel[this.bushel.length-1].y;
       }
-
+      //this.bushel[0].y = this.bushel[0].y.toFixed(2);
 
       //this.allGrass.push(this.bushel);
       listOfSingles.push(this.bushel);
   }
     //double
-    for(let j = 0; j < maxCount/3; ++j){
+    for(let j = 0; j < maxDoubles; ++j){
       this.bushel = []
       let subPoint = p5.createVector(p5.random(0, this.w),p5.random((this.h - this.h/4+20), this.h));
       for(let p = 0; p < pointCount; ++p){
@@ -169,7 +176,10 @@ export default class Ground {
           subPoint.y -= yChange;
           //console.log(`going up: ${subPoint}`)
         }
-        let next = p5.createVector(subPoint.x, subPoint.y)
+        //simplify the x and y values
+        let x = Math.trunc(subPoint.x * 10) / 10;
+        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
       //make sure the height, y-value, is the same for the first and last grass blades.
@@ -192,7 +202,10 @@ export default class Ground {
           subPoint.y -= yChange;
           //console.log(`going up: ${subPoint}`)
         }
-        let next = p5.createVector(subPoint.x, subPoint.y)
+        //simplify the x and y values
+        let x = Math.trunc(subPoint.x * 10) / 10;
+        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
       //make sure the height, y-value, is the same for the first and last grass blades.
@@ -206,7 +219,7 @@ export default class Ground {
       listOfDoubles.push(this.bushel);
   }
     //triple 
-    for(let j = 0; j < maxCount/3; ++j){
+    for(let j = 0; j < maxTriples; ++j){
       this.bushel = []
       let subPoint = p5.createVector(p5.random(0, this.w),p5.random((this.h - this.h/4+20), this.h));
       for(let p = 0; p < pointCount; ++p){
@@ -221,7 +234,10 @@ export default class Ground {
           subPoint.y -= yChange;
           //console.log(`going up: ${subPoint}`)
         }
-        let next = p5.createVector(subPoint.x, subPoint.y)
+        //simplify the x and y values
+        let x = Math.trunc(subPoint.x * 10) / 10;
+        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
       //make sure the height, y-value, is the same for the first and last grass blades.
@@ -244,7 +260,10 @@ export default class Ground {
           subPoint.y -= yChange;
           //console.log(`going up: ${subPoint}`)
         }
-        let next = p5.createVector(subPoint.x, subPoint.y)
+        //simplify the x and y values
+        let x = Math.trunc(subPoint.x * 10) / 10;
+        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
       //make sure the height, y-value, is the same for the first and last grass blades.
@@ -264,7 +283,10 @@ export default class Ground {
           subPoint.y -= yChange;
           //console.log(`going up: ${subPoint}`)
         }
-        let next = p5.createVector(subPoint.x, subPoint.y)
+        //simplify the x and y values
+        let x = Math.trunc(subPoint.x * 10) / 10;
+        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
       //make sure the height, y-value, is the same for the first and last grass blades.
@@ -277,16 +299,17 @@ export default class Ground {
       this.allGrass.push(this.bushel);
       listOfTriples.push(this.bushel);
   }
-    console.log(`bushel: ${this.bushel.length}`);
-    console.log(this.allGrass);
-    console.log(`maxCount ${maxCount}`)
-    console.log(`single Length : ${listOfSingles.length}`)
-    console.log(`Doubles Length : ${listOfDoubles.length}`)
-    console.log(`Triples Length : ${listOfTriples}`)
+    //let totalList = listOfSingles.concat(listOfDoubles).concat(listOfTriples);
+    //let sortedList = this.mergeSort(totalList);
+    //console.log(sortedList);
+    //listOfSingles = this.mergeSort(listOfSingles);
+    //listOfDoubles = this.mergeSort(listOfDoubles);
+    listOfTriples = this.mergeSort(listOfTriples);
+    console.log(listOfSingles)
     this.grassGroups.set('singles', listOfSingles)
     this.grassGroups.set('doubles', listOfDoubles)
     this.grassGroups.set('triples', listOfTriples)
-    console.log(this.grassGroups.size);
+
     //main issue at the moment is the bushel is not being added as a separate bushel in the allgrass list
   }
   drawGrass(p5){
@@ -297,7 +320,10 @@ export default class Ground {
     let singles = this.grassGroups.get('singles');
     let doubles = this.grassGroups.get('doubles');
     let triples = this.grassGroups.get('triples');
-
+    let totalList = singles.concat(doubles)
+    totalList = totalList.concat(triples);
+    //totalList = this.mergeSort(totalList);
+    //let targetY = this.getSmallestY(singles[0],doubles[0],triples[0]);
     p5.push();
     this.color = [131, 227, 115 ] //green
     p5.fill(this.color);
@@ -305,96 +331,111 @@ export default class Ground {
     p5.strokeWeight(1)
     //point(loc[0].x,loc[0].y);
     for(let i = 0; i < singles.length; ++i){
-      p5.beginShape();
-      //1st blade
-      p5.curveVertex(singles[i][0].x, singles[i][0].y)
-      p5.curveVertex(singles[i][0].x, singles[i][0].y)
-      p5.vertex(singles[i][1].x, singles[i][1].y)
-      p5.vertex(singles[i][2].x, singles[i][2].y)
-      p5.vertex(singles[i][3].x, singles[i][3].y)
-      p5.curveVertex(singles[i][4].x, singles[i][4].y)
-      p5.curveVertex(singles[i][4].x, singles[i][4].y)
-      
-      p5.endShape();
+      this.drawSingleBushel(p5,singles[i]);
     }
     for(let i = 0; i < doubles.length; ++i){
-      p5.beginShape();
-      //1st blade
-      p5.curveVertex(doubles[i][0].x, doubles[i][0].y)
-      p5.curveVertex(doubles[i][0].x, doubles[i][0].y)
-      p5.vertex(doubles[i][1].x, doubles[i][1].y)
-      p5.vertex(doubles[i][2].x, doubles[i][2].y)
-      p5.vertex(doubles[i][3].x, doubles[i][3].y)
-      p5.curveVertex(doubles[i][4].x, doubles[i][4].y)
-      p5.curveVertex(doubles[i][4].x, doubles[i][4].y)
-    
-      //2nd blade
-      p5.vertex(doubles[i][5].x, doubles[i][5].y)
-      p5.vertex(doubles[i][6].x, doubles[i][6].y)
-      p5.vertex(doubles[i][7].x, doubles[i][7].y)
-      p5.curveVertex(doubles[i][8].x, doubles[i][8].y)
-      p5.curveVertex(doubles[i][8].x, doubles[i][8].y)
-      
-      p5.endShape();
+      this.drawDoubleBushel(p5,doubles[i]);
     }
     for(let i = 0; i < triples.length; ++i){
-      p5.beginShape();
-      //1st blade
-      p5.curveVertex(triples[i][0].x, triples[i][0].y)
-      p5.curveVertex(triples[i][0].x, triples[i][0].y)
-      p5.vertex(triples[i][1].x, triples[i][1].y)
-      p5.vertex(triples[i][2].x, triples[i][2].y)
-      p5.vertex(triples[i][3].x, triples[i][3].y)
-      p5.curveVertex(triples[i][4].x, triples[i][4].y)
-      p5.curveVertex(triples[i][4].x, triples[i][4].y)
-    
-      //2nd blade
-      p5.vertex(triples[i][5].x, triples[i][5].y)
-      p5.vertex(triples[i][6].x, triples[i][6].y)
-      p5.vertex(triples[i][7].x, triples[i][7].y)
-      p5.curveVertex(triples[i][8].x, triples[i][8].y)
-      p5.curveVertex(triples[i][8].x, triples[i][8].y)
-      
-      //3rd blade
-      p5.vertex(triples[i][9].x, triples[i][9].y)
-      p5.vertex(triples[i][10].x, triples[i][10].y)
-      p5.vertex(triples[i][11].x, triples[i][11].y)
-      p5.curveVertex(triples[i][12].x, triples[i][12].y)
-      p5.curveVertex(triples[i][12].x, triples[i][12].y)
-      
-      p5.endShape();
-    }
-
-    for(let i = 0; i < this.allGrass.length; ++i){
-      p5.beginShape();
-      //1st blade
-      p5.curveVertex(this.allGrass[i][0].x, this.allGrass[i][0].y)
-      p5.curveVertex(this.allGrass[i][0].x, this.allGrass[i][0].y)
-      p5.vertex(this.allGrass[i][1].x, this.allGrass[i][1].y)
-      p5.vertex(this.allGrass[i][2].x, this.allGrass[i][2].y)
-      p5.vertex(this.allGrass[i][3].x, this.allGrass[i][3].y)
-      p5.curveVertex(this.allGrass[i][4].x, this.allGrass[i][4].y)
-      p5.curveVertex(this.allGrass[i][4].x, this.allGrass[i][4].y)
-    
-      //2nd blade
-      p5.vertex(this.allGrass[i][5].x, this.allGrass[i][5].y)
-      p5.vertex(this.allGrass[i][6].x, this.allGrass[i][6].y)
-      p5.vertex(this.allGrass[i][7].x, this.allGrass[i][7].y)
-      p5.curveVertex(this.allGrass[i][8].x, this.allGrass[i][8].y)
-      p5.curveVertex(this.allGrass[i][8].x, this.allGrass[i][8].y)
-      
-      //3rd blade
-      p5.vertex(this.allGrass[i][9].x, this.allGrass[i][9].y)
-      p5.vertex(this.allGrass[i][10].x, this.allGrass[i][10].y)
-      p5.vertex(this.allGrass[i][11].x, this.allGrass[i][11].y)
-      p5.curveVertex(this.allGrass[i][12].x, this.allGrass[i][12].y)
-      p5.curveVertex(this.allGrass[i][12].x, this.allGrass[i][12].y)
-      
-      p5.endShape();
+      this.drawTripleBushel(p5,triples[i]);
     }
     p5.pop()
   }
+  drawSingleBushel(p5,single){
+    p5.beginShape();
+    //1st blade
+    p5.curveVertex(single[0].x, single[0].y)
+    p5.curveVertex(single[0].x, single[0].y)
+    p5.vertex(single[1].x, single[1].y)
+    p5.vertex(single[2].x, single[2].y)
+    p5.vertex(single[3].x, single[3].y)
+    p5.curveVertex(single[4].x, single[4].y)
+    p5.curveVertex(single[4].x, single[4].y)
+    
+    p5.endShape();
+  }
+  drawDoubleBushel(p5,double){
+    p5.beginShape();
+    //1st blade
+    p5.curveVertex(double[0].x, double[0].y)
+    p5.curveVertex(double[0].x, double[0].y)
+    p5.vertex(double[1].x, double[1].y)
+    p5.vertex(double[2].x, double[2].y)
+    p5.vertex(double[3].x, double[3].y)
+    p5.curveVertex(double[4].x, double[4].y)
+    p5.curveVertex(double[4].x, double[4].y)
+  
+    //2nd blade
+    p5.vertex(double[5].x, double[5].y)
+    p5.vertex(double[6].x, double[6].y)
+    p5.vertex(double[7].x, double[7].y)
+    p5.curveVertex(double[8].x, double[8].y)
+    p5.curveVertex(double[8].x, double[8].y)
+    
+    p5.endShape();
+  }
+  drawTripleBushel(p5,triple){
+    p5.beginShape();
+    //1st blade
+    p5.curveVertex(triple[0].x, triple[0].y)
+    p5.curveVertex(triple[0].x, triple[0].y)
+    p5.vertex(triple[1].x, triple[1].y)
+    p5.vertex(triple[2].x, triple[2].y)
+    p5.vertex(triple[3].x, triple[3].y)
+    p5.curveVertex(triple[4].x, triple[4].y)
+    p5.curveVertex(triple[4].x, triple[4].y)
+  
+    //2nd blade
+    p5.vertex(triple[5].x, triple[5].y)
+    p5.vertex(triple[6].x, triple[6].y)
+    p5.vertex(triple[7].x, triple[7].y)
+    p5.curveVertex(triple[8].x, triple[8].y)
+    p5.curveVertex(triple[8].x, triple[8].y)
+    
+    //3rd blade
+    p5.vertex(triple[9].x, triple[9].y)
+    p5.vertex(triple[10].x, triple[10].y)
+    p5.vertex(triple[11].x, triple[11].y)
+    p5.curveVertex(triple[12].x, triple[12].y)
+    p5.curveVertex(triple[12].x, triple[12].y)
+    
+    p5.endShape();
+  }
+  mergeSort(arr){
+    if(arr.length <= 1){
+      return arr;
+    }
+    let mid = Math.floor(arr.length/2);
+    let left = this.mergeSort(arr.slice(0,mid));
+    let right = this.mergeSort(arr.slice(mid));
+    console.log(left)
+    return this.merge(left, right);
+  }
+  merge(left, right){
+    let result = [];
+    let i = 0; 
+    let j = 0;
+    while(i < left.length && j < right.length){
+      console.log(left[i][0].y);
+      console.log(right[i][0].y);
+      if(left[i][0].y < right[i][0].y){
+        result.push(left[i]);
+        i++;
+      }
+      else{
+        result.push(right[j]);
+        j++;
+      }
+      console.log("SORTED");
+      console.log(result)
+      return result.concat(left.slice(i)).concat(right.slice(j));
+    }
+  }
 }
+
+
+
+
 /*
 function setup() {
   createCanvas(400, 400);
