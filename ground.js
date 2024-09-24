@@ -27,7 +27,7 @@ export default class Ground {
     let rockLoc = p5.createVector(this.w/3,this.h-(this.groundY2 / 2)-this.size2*2)
     let grassLoc = p5.createVector(p5.random(0, this.w),p5.random((this.h - this.h/4+20), this.h));
     this.loc = [grassLoc, rockLoc, dirtLoc]
-    this.maxBushels = 600;
+    this.maxBushels = 2000;
     this.setupGrass(p5, this.maxBushels);
   }
   drawGround(p5){
@@ -115,16 +115,19 @@ export default class Ground {
     //y_offset changes height of blades
     let pointCount = 5;
     let distance = this.size1 + 10;
-    let x_offset = 0.03;
-    let y_offset = .1;
+    let x_offset = 0.01;
+    let y_offset = .09;
     let xRange = [1,distance*x_offset];
     let yRange = [1,distance*y_offset];
     let listOfSingles = []
     let listOfDoubles = []
     let listOfTriples = []
-    let maxSingles = maxCount/2;
-    let maxDoubles = maxSingles/2;
-    let maxTriples = maxDoubles/3;
+    let maxSingles = maxCount;
+    let maxDoubles = 0;
+    let maxTriples = 0;
+    //let maxSingles = maxCount/2;
+    //let maxDoubles = maxSingles/2;
+    //let maxTriples = maxDoubles/3;
     let lowestPoint = -1;
     //single
     for(let j = 0; j < maxSingles; ++j){
@@ -143,8 +146,8 @@ export default class Ground {
           //console.log(`going up: ${subPoint}`)
         }
         //simplify the x and y values
-        let x = Math.trunc(subPoint.x * 10) / 10;
-        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let x = Math.trunc(subPoint.x );
+        let y =  Math.trunc(subPoint.y );
         let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
@@ -177,8 +180,8 @@ export default class Ground {
           //console.log(`going up: ${subPoint}`)
         }
         //simplify the x and y values
-        let x = Math.trunc(subPoint.x * 10) / 10;
-        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let x = Math.trunc(subPoint.x );
+        let y =  Math.trunc(subPoint.y );
         let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
@@ -203,8 +206,8 @@ export default class Ground {
           //console.log(`going up: ${subPoint}`)
         }
         //simplify the x and y values
-        let x = Math.trunc(subPoint.x * 10) / 10;
-        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let x = Math.trunc(subPoint.x );
+        let y =  Math.trunc(subPoint.y );
         let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
@@ -235,8 +238,8 @@ export default class Ground {
           //console.log(`going up: ${subPoint}`)
         }
         //simplify the x and y values
-        let x = Math.trunc(subPoint.x * 10) / 10;
-        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let x = Math.trunc(subPoint.x );
+        let y =  Math.trunc(subPoint.y );
         let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
@@ -261,8 +264,8 @@ export default class Ground {
           //console.log(`going up: ${subPoint}`)
         }
         //simplify the x and y values
-        let x = Math.trunc(subPoint.x * 10) / 10;
-        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let x = Math.trunc(subPoint.x );
+        let y =  Math.trunc(subPoint.y );
         let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
@@ -284,8 +287,8 @@ export default class Ground {
           //console.log(`going up: ${subPoint}`)
         }
         //simplify the x and y values
-        let x = Math.trunc(subPoint.x * 10) / 10;
-        let y =  Math.trunc(subPoint.y * 10) / 10;
+        let x = Math.trunc(subPoint.x );
+        let y =  Math.trunc(subPoint.y);
         let next = p5.createVector(x, y)
         this.bushel.push(next);
       }
@@ -299,45 +302,32 @@ export default class Ground {
       this.allGrass.push(this.bushel);
       listOfTriples.push(this.bushel);
   }
-    //let totalList = listOfSingles.concat(listOfDoubles).concat(listOfTriples);
-    //let sortedList = this.mergeSort(totalList);
-    //console.log(sortedList);
-    //listOfSingles = this.mergeSort(listOfSingles);
-    //listOfDoubles = this.mergeSort(listOfDoubles);
-    listOfTriples = this.mergeSort(listOfTriples);
-    console.log(listOfSingles)
-    this.grassGroups.set('singles', listOfSingles)
-    this.grassGroups.set('doubles', listOfDoubles)
-    this.grassGroups.set('triples', listOfTriples)
+    let totalList = listOfSingles.concat(listOfDoubles).concat(listOfTriples);
+    let sortedList = this.mergeSort(totalList);
+    this.grassGroups.set('bushels', sortedList);
 
     //main issue at the moment is the bushel is not being added as a separate bushel in the allgrass list
   }
   drawGrass(p5){
-    //this.setupGrass(p5);
-    //DRAW GRASS
     //grass - clump of blades
     //get the groups of grass
-    let singles = this.grassGroups.get('singles');
-    let doubles = this.grassGroups.get('doubles');
-    let triples = this.grassGroups.get('triples');
-    let totalList = singles.concat(doubles)
-    totalList = totalList.concat(triples);
-    //totalList = this.mergeSort(totalList);
-    //let targetY = this.getSmallestY(singles[0],doubles[0],triples[0]);
+    let bushels = this.grassGroups.get('bushels');
     p5.push();
     this.color = [131, 227, 115 ] //green
     p5.fill(this.color);
     p5.stroke(1);
-    p5.strokeWeight(1)
-    //point(loc[0].x,loc[0].y);
-    for(let i = 0; i < singles.length; ++i){
-      this.drawSingleBushel(p5,singles[i]);
-    }
-    for(let i = 0; i < doubles.length; ++i){
-      this.drawDoubleBushel(p5,doubles[i]);
-    }
-    for(let i = 0; i < triples.length; ++i){
-      this.drawTripleBushel(p5,triples[i]);
+    p5.strokeWeight(.3)
+
+    for (let i = 0; i < bushels.length; i++) {
+      let currentBushel = bushels[i];
+    
+      if (currentBushel.length === 5) {
+        this.drawSingleBushel(p5, currentBushel);
+      } else if (currentBushel.length === 9) {
+        this.drawDoubleBushel(p5, currentBushel);
+      } else {
+        this.drawTripleBushel(p5, currentBushel);
+      }
     }
     p5.pop()
   }
@@ -408,7 +398,6 @@ export default class Ground {
     let mid = Math.floor(arr.length/2);
     let left = this.mergeSort(arr.slice(0,mid));
     let right = this.mergeSort(arr.slice(mid));
-    console.log(left)
     return this.merge(left, right);
   }
   merge(left, right){
@@ -416,9 +405,7 @@ export default class Ground {
     let i = 0; 
     let j = 0;
     while(i < left.length && j < right.length){
-      console.log(left[i][0].y);
-      console.log(right[i][0].y);
-      if(left[i][0].y < right[i][0].y){
+      if(left[i][0].y < right[j][0].y){
         result.push(left[i]);
         i++;
       }
@@ -426,10 +413,8 @@ export default class Ground {
         result.push(right[j]);
         j++;
       }
-      console.log("SORTED");
-      console.log(result)
-      return result.concat(left.slice(i)).concat(right.slice(j));
     }
+    return result.concat(left.slice(i)).concat(right.slice(j));
   }
 }
 
