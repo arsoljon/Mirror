@@ -18,8 +18,9 @@ export default class Ground {
     //debris setup
     this.allDirt = []
     this.allRock = []
-    this.allGrass = []
     this.grassGroups = new Map();
+    this.rockGroups = new Map();
+    this.rockGroups.set('allRocks',[]);
     this.size1 = p5.random(15,25)
     this.size2 = p5.random(15,25)
     this.size3 = p5.random(15,25)
@@ -27,7 +28,7 @@ export default class Ground {
     let rockLoc = p5.createVector(this.w/3,this.h-(this.groundY2 / 2)-this.size2*2)
     let grassLoc = p5.createVector(p5.random(0, this.w),p5.random((this.h - this.h/4+20), this.h));
     this.loc = [grassLoc, rockLoc, dirtLoc]
-    this.maxBushels = 2000;
+    this.maxBushels = 500;
     this.setupGrass(p5, this.maxBushels);
   }
   drawGround(p5){
@@ -59,7 +60,6 @@ export default class Ground {
   drawGroundCover(p5){
     this.drawRock(p5);
     this.drawGrass(p5);
-    this.drawGrass(p5);
   }
 
   drawRock(p5){
@@ -68,12 +68,63 @@ export default class Ground {
     //1st point equals start point. 
     //2nd point -> x += 1<=changeX<= size/2, y += -size/3<=changeY<=size/3
     //3rd point -> x += -size/2<=changeX<=-1, y += -size/3<=changeY<=size/3
-    let maxSize = 10;
-    let minSize = 7;
+    let allRocks = [];
+
+    let maxSize = 4;
+    let minSize = 4;
+    let rockOffset = 2;
+    let distance = this.size1 + 10;
+    let maxRocks = this.maxBushels/50;
+    let listOfRocks = []
     //let distance = this.size2+40
+    for(let i = 0; i < maxRocks; ++i){
+      let rock = []
+      //in terms of the cavnas and items drawn
+      //the higher the y-value of a rock dictates the lowest point the rock touches the ground.
+      let lowestPoint = -1;
+      //top left point
+      let start = p5.createVector(p5.random(0, this.w),p5.random((this.h - (this.h*.24)), this.h));
+      rock.push(start);
+      //top right point
+      let xChange = p5.random(0, maxSize);
+      let yChange = p5.random(-rockOffset, rockOffset);
+      start.x += xChange;
+      start.y += yChange;
+      let next = p5.createVector(start.x+xChange, start.y+yChange);
+      rock.push(next);
+      //bottom right point
+      xChange = p5.random(-rockOffset,rockOffset);
+      yChange = p5.random(minSize, maxSize);
+      next = p5.createVector(next.x+xChange,next.y+yChange);
+      if(next.y > lowestPoint){
+        lowestPoint = next.y;
+      }
+      rock.push(next);
+      //bottom left point
+      xChange = p5.random(-maxSize, -minSize);
+      yChange = p5.random(0, rockOffset);
+      start.x += xChange;
+      start.y += yChange;
+      next = p5.createVector(next.x+xChange, next.y+yChange);
+      if(next.y > lowestPoint){
+        lowestPoint = next.y;
+      }
+      rock.push(next);
+      let rockMap = new Map();
+      rockMap.set('lowestPoint', Math.trunc(lowestPoint));
+      rockMap.set('rock', rock);
+      allRocks.push(rockMap);
+
+      this.allRock.push(rock);
+    }
+    this.rockGroups.set('allRocks',allRocks);
+    console.log(this.rockGroups);
+    
+    //this.allRock = []
+    /*
     let start = p5.createVector(this.loc[1].x, this.loc[1].y);
     this.allRock.push(start);
-    let changeX = p5.random(minSize, maxSize)
+    let changeX = p5.random(minSize, maxSize);
     let changeY = p5.random(-minSize,minSize);
     let next = p5.createVector(start.x+changeX, start.y+changeY);
     this.allRock.push(next);
@@ -82,28 +133,32 @@ export default class Ground {
     next = p5.createVector(next.x+changeX, next.y+changeY);
     this.allRock.push(next);
     changeX = p5.random(-minSize,0);
-    changeY = p5.random(minSize,maxSize)  
+    changeY = p5.random(minSize,maxSize);
     next = p5.createVector(start.x+changeX, start.y+changeY);
     this.allRock.push(next);
+    */
     //draw  
-      //rock - sharp or rounded cirlces    
-    p5.push();
-    this.color = [ 200, 200, 200] //grey
-    let offset = 1;
-    p5.fill(this.color);
-    p5.stroke(0);
-    p5.strokeWeight(1)
-    p5.beginShape();
-    p5.curveVertex(this.allRock[0].x*offset, this.allRock[0].y*offset);
-    p5.curveVertex(this.allRock[1].x*offset, this.allRock[1].y*offset);
-    p5.curveVertex(this.allRock[2].x*offset, this.allRock[2].y*offset);
-    p5.curveVertex(this.allRock[3].x*offset, this.allRock[3].y*offset);
-    p5.vertex(this.allRock[0].x*offset, this.allRock[0].y*offset);
-    p5.vertex(this.allRock[1].x*offset, this.allRock[1].y*offset);
-    p5.vertex(this.allRock[2].x*offset, this.allRock[2].y*offset);
-    //vertex(this.allRock[3].x*offset, this.allRock[3].y*offset);
-    p5.endShape();
-    p5.pop();
+      //rock - sharp or rounded cirlces   
+    for(let i = 0; i < maxRocks; ++i){
+      p5.push();
+      this.color = [ 200, 200, 200] //grey
+      let offset = 1;
+      p5.fill(this.color);
+      p5.stroke(0);
+      p5.strokeWeight(.2);
+      //p5.noStroke();
+      p5.beginShape();
+      p5.curveVertex(this.allRock[i][0].x*offset, this.allRock[i][0].y*offset);
+      p5.curveVertex(this.allRock[i][1].x*offset, this.allRock[i][1].y*offset);
+      p5.curveVertex(this.allRock[i][2].x*offset, this.allRock[i][2].y*offset);
+      p5.curveVertex(this.allRock[i][3].x*offset, this.allRock[i][3].y*offset);
+      p5.vertex(this.allRock[i][0].x*offset, this.allRock[i][0].y*offset);
+      p5.vertex(this.allRock[i][1].x*offset, this.allRock[i][1].y*offset);
+      p5.vertex(this.allRock[i][2].x*offset, this.allRock[i][2].y*offset);
+      //vertex(this.allRock[3].x*offset, this.allRock[3].y*offset);
+      p5.endShape();
+      p5.pop();
+    } 
   }
 
   setupGrass(p5, maxCount){
@@ -113,24 +168,60 @@ export default class Ground {
     //triple blades have 13 points
     //x_offset changes width of blades
     //y_offset changes height of blades
-    let pointCount = 5;
     let distance = this.size1 + 10;
     let x_offset = 0.01;
     let y_offset = .09;
     let xRange = [1,distance*x_offset];
     let yRange = [1,distance*y_offset];
-    let listOfSingles = []
-    let listOfDoubles = []
-    let listOfTriples = []
     let maxSingles = maxCount;
     let maxDoubles = 0;
     let maxTriples = 0;
     //let maxSingles = maxCount/2;
     //let maxDoubles = maxSingles/2;
     //let maxTriples = maxDoubles/3;
-    let lowestPoint = -1;
+    
     //single
-    for(let j = 0; j < maxSingles; ++j){
+    let listOfSingles = this.setupSingleBushel(p5, maxSingles,xRange, yRange);
+    //double
+    let listOfDoubles = this.setupDoubleBushel(p5, maxDoubles,xRange, yRange);
+    //triple 
+    let listOfTriples = this.setupTripleBushel(p5, maxTriples,xRange, yRange);
+    
+    
+    let totalList = listOfSingles.concat(listOfDoubles).concat(listOfTriples);
+    let sortedList = this.mergeSort(totalList);
+    this.grassGroups.set('bushels', sortedList);
+
+    //main issue at the moment is the bushel is not being added as a separate bushel in the allgrass list
+  }
+  drawGrass(p5){
+    //grass - clump of blades
+    //get the groups of grass
+    let bushels = this.grassGroups.get('bushels');
+    p5.push();
+    this.color = [131, 227, 115 ] //green
+    p5.fill(this.color);
+    p5.stroke(1);
+    p5.strokeWeight(.3)
+
+    for (let i = 0; i < bushels.length; i++) {
+      let currentBushel = bushels[i];
+    
+      if (currentBushel.length === 5) {
+        this.drawSingleBushel(p5, currentBushel);
+      } else if (currentBushel.length === 9) {
+        this.drawDoubleBushel(p5, currentBushel);
+      } else {
+        this.drawTripleBushel(p5, currentBushel);
+      }
+    }
+    p5.pop()
+  }
+  setupSingleBushel(p5, max, xRange, yRange){
+    let pointCount = 5;
+    let listOfSingles = [];
+    let lowestPoint = -1;
+    for(let j = 0; j < max; ++j){
       this.bushel = []
       let subPoint = p5.createVector(p5.random(0, this.w),p5.random((this.h - (this.h*.24)), this.h));
       for(let p = 0; p < pointCount; ++p){
@@ -162,9 +253,14 @@ export default class Ground {
 
       //this.allGrass.push(this.bushel);
       listOfSingles.push(this.bushel);
+    }
+    return listOfSingles;
   }
-    //double
-    for(let j = 0; j < maxDoubles; ++j){
+  setupDoubleBushel(p5, max, xRange, yRange){
+    let lowestPoint = -1;
+    let pointCount = 5;
+    let listOfDoubles = [];
+    for(let j = 0; j < max; ++j){
       this.bushel = []
       let subPoint = p5.createVector(p5.random(0, this.w),p5.random((this.h - this.h/4+20), this.h));
       for(let p = 0; p < pointCount; ++p){
@@ -220,9 +316,14 @@ export default class Ground {
       this.bushel[this.bushel.length-1].y = lowestPoint;
       //this.allGrass.push(this.bushel);
       listOfDoubles.push(this.bushel);
+    }
+    return listOfDoubles;
   }
-    //triple 
-    for(let j = 0; j < maxTriples; ++j){
+  setupTripleBushel(p5, max, xRange, yRange){
+    let lowestPoint = -1;
+    let pointCount = 5;
+    let listOfTriples = [];
+    for(let j = 0; j < max; ++j){
       this.bushel = []
       let subPoint = p5.createVector(p5.random(0, this.w),p5.random((this.h - this.h/4+20), this.h));
       for(let p = 0; p < pointCount; ++p){
@@ -299,37 +400,9 @@ export default class Ground {
 
       this.bushel[0].y = lowestPoint;
       this.bushel[this.bushel.length-1].y = lowestPoint;
-      this.allGrass.push(this.bushel);
       listOfTriples.push(this.bushel);
-  }
-    let totalList = listOfSingles.concat(listOfDoubles).concat(listOfTriples);
-    let sortedList = this.mergeSort(totalList);
-    this.grassGroups.set('bushels', sortedList);
-
-    //main issue at the moment is the bushel is not being added as a separate bushel in the allgrass list
-  }
-  drawGrass(p5){
-    //grass - clump of blades
-    //get the groups of grass
-    let bushels = this.grassGroups.get('bushels');
-    p5.push();
-    this.color = [131, 227, 115 ] //green
-    p5.fill(this.color);
-    p5.stroke(1);
-    p5.strokeWeight(.3)
-
-    for (let i = 0; i < bushels.length; i++) {
-      let currentBushel = bushels[i];
-    
-      if (currentBushel.length === 5) {
-        this.drawSingleBushel(p5, currentBushel);
-      } else if (currentBushel.length === 9) {
-        this.drawDoubleBushel(p5, currentBushel);
-      } else {
-        this.drawTripleBushel(p5, currentBushel);
-      }
     }
-    p5.pop()
+    return listOfTriples;
   }
   drawSingleBushel(p5,single){
     p5.beginShape();
