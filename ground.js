@@ -118,25 +118,6 @@ export default class Ground {
       this.allRock.push(rock);
     }
     this.rockGroups.set('allRocks',allRocks);
-    console.log(this.rockGroups);
-    
-    //this.allRock = []
-    /*
-    let start = p5.createVector(this.loc[1].x, this.loc[1].y);
-    this.allRock.push(start);
-    let changeX = p5.random(minSize, maxSize);
-    let changeY = p5.random(-minSize,minSize);
-    let next = p5.createVector(start.x+changeX, start.y+changeY);
-    this.allRock.push(next);
-    changeX = p5.random(-minSize,minSize);
-    changeY = p5.random(minSize, maxSize);
-    next = p5.createVector(next.x+changeX, next.y+changeY);
-    this.allRock.push(next);
-    changeX = p5.random(-minSize,0);
-    changeY = p5.random(minSize,maxSize);
-    next = p5.createVector(start.x+changeX, start.y+changeY);
-    this.allRock.push(next);
-    */
     //draw  
       //rock - sharp or rounded cirlces   
     for(let i = 0; i < maxRocks; ++i){
@@ -169,13 +150,14 @@ export default class Ground {
     //x_offset changes width of blades
     //y_offset changes height of blades
     let distance = this.size1 + 10;
-    let x_offset = 0.01;
+
+    let x_offset = .01;
     let y_offset = .09;
-    let xRange = [1,distance*x_offset];
+    let xRange = [.4,distance*x_offset];
     let yRange = [1,distance*y_offset];
     let maxSingles = maxCount;
-    let maxDoubles = 0;
-    let maxTriples = 0;
+    let maxDoubles = maxSingles/2;
+    let maxTriples = maxDoubles/3;
     //let maxSingles = maxCount/2;
     //let maxDoubles = maxSingles/2;
     //let maxTriples = maxDoubles/3;
@@ -202,7 +184,8 @@ export default class Ground {
     this.color = [131, 227, 115 ] //green
     p5.fill(this.color);
     p5.stroke(1);
-    p5.strokeWeight(.3)
+    p5.strokeWeight(.1)
+ 
 
     for (let i = 0; i < bushels.length; i++) {
       let currentBushel = bushels[i];
