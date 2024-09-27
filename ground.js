@@ -28,8 +28,14 @@ export default class Ground {
     let rockLoc = p5.createVector(this.w/3,this.h-(this.groundY2 / 2)-this.size2*2)
     let grassLoc = p5.createVector(p5.random(0, this.w),p5.random((this.h - this.h/4+20), this.h));
     this.loc = [grassLoc, rockLoc, dirtLoc]
+
     this.maxBushels = 500;
+    this.maxRocks = this.maxBushels * .03
     this.setupGrass(p5, this.maxBushels);
+    this.setupRock(p5, this.maxRocks);
+    let temp = this.allRock.concat(this.grassGroups.get('bushels'));
+    this.allDebris = this.mergeSort(temp); 
+
   }
   drawGround(p5){
     this.gc.push();
@@ -58,8 +64,101 @@ export default class Ground {
   }
 
   drawGroundCover(p5){
-    this.drawRock(p5);
-    this.drawGrass(p5);
+    //this.drawRock(p5);
+    //this.drawGrass(p5);
+    this.drawDebris(p5);
+  }
+
+  drawDebris(p5){
+    for (let i = 0; i < this.allDebris.length; i++) {
+      let debris = this.allDebris[i]
+      if (debris.length === 4){
+        p5.push()
+        this.color = [ 200, 200, 200] //grey
+        p5.fill(this.color);
+        p5.stroke(0);
+        p5.strokeWeight(.2);
+        this.drawSingleRock(p5,debris);
+        p5.pop()
+      }
+      else{
+        p5.push();
+        this.color = [131, 227, 115 ] //green
+        p5.fill(this.color);
+        p5.stroke(1);
+        p5.strokeWeight(.1)
+        if (debris.length === 5) {
+          this.drawSingleBushel(p5, debris);
+        } else if (debris.length === 9) {
+          this.drawDoubleBushel(p5, debris);
+        } else {
+          this.drawTripleBushel(p5, debris);
+        }
+        p5.pop();
+      }
+    }
+  }
+
+  drawSingleRock(p5,rock){
+    p5.push();
+    let offset = 1;
+    p5.beginShape();
+    p5.curveVertex(rock[0].x*offset, rock[0].y*offset);
+    p5.curveVertex(rock[1].x*offset, rock[1].y*offset);
+    p5.curveVertex(rock[2].x*offset, rock[2].y*offset);
+    p5.curveVertex(rock[3].x*offset, rock[3].y*offset);
+    p5.vertex(rock[0].x*offset, rock[0].y*offset);
+    p5.vertex(rock[1].x*offset, rock[1].y*offset);
+    p5.vertex(rock[2].x*offset, rock[2].y*offset);
+      //vertex(this.allRock[3].x*offset, this.allRock[3].y*offset);
+    p5.endShape();
+    p5.pop();
+  }
+
+  setupRock(p5, max){
+    //setup
+    //make a custom shape with maximum of 3 points
+    //1st point equals start point. 
+    //2nd point -> x += 1<=changeX<= size/2, y += -size/3<=changeY<=size/3
+    //3rd point -> x += -size/2<=changeX<=-1, y += -size/3<=changeY<=size/3
+    let maxRocks = max;
+    let allRocks = [];
+    let maxSize = 5;
+    let minSize = 3;
+    let rockOffset =2;
+    for(let i = 0; i < maxRocks; ++i){
+      let rock = []
+      //in terms of the cavnas and items drawn
+      //the higher the y-value of a rock dictates the lowest point the rock touches the ground.
+      let lowestPoint = -1;
+      //bottom left point
+      let start = p5.createVector(p5.random(0, this.w),p5.random((this.h - (this.h*.24)), this.h));
+      rock.push(start);
+      //top left point
+      let xChange = p5.random(-rockOffset,-1);
+      let yChange = p5.random(-maxSize, -minSize);
+      let next = p5.createVector(start.x+xChange,start.y+yChange);
+      rock.push(next); 
+      //top right point
+      xChange = p5.random(minSize, maxSize);
+      yChange = 0;
+      next.x += xChange;
+      next.y += yChange;
+      next = p5.createVector(next.x+xChange, next.y+yChange);
+      rock.push(next);
+      //bottom right point
+      xChange = maxSize;
+      yChange = p5.random(minSize, maxSize);
+      next = p5.createVector(next.x+xChange,next.y+yChange);
+      rock.push(next);
+      let rockMap = new Map();
+      rockMap.set('rock', rock);
+      allRocks.push(rockMap);
+
+      this.allRock.push(rock);
+    }
+    this.rockGroups.set('allRocks',allRocks);
+
   }
 
   drawRock(p5){
@@ -68,59 +167,9 @@ export default class Ground {
     //1st point equals start point. 
     //2nd point -> x += 1<=changeX<= size/2, y += -size/3<=changeY<=size/3
     //3rd point -> x += -size/2<=changeX<=-1, y += -size/3<=changeY<=size/3
-    let allRocks = [];
-
-    let maxSize = 4;
-    let minSize = 4;
-    let rockOffset = 2;
-    let distance = this.size1 + 10;
-    let maxRocks = this.maxBushels/50;
-    let listOfRocks = []
-    //let distance = this.size2+40
-    for(let i = 0; i < maxRocks; ++i){
-      let rock = []
-      //in terms of the cavnas and items drawn
-      //the higher the y-value of a rock dictates the lowest point the rock touches the ground.
-      let lowestPoint = -1;
-      //top left point
-      let start = p5.createVector(p5.random(0, this.w),p5.random((this.h - (this.h*.24)), this.h));
-      rock.push(start);
-      //top right point
-      let xChange = p5.random(0, maxSize);
-      let yChange = p5.random(-rockOffset, rockOffset);
-      start.x += xChange;
-      start.y += yChange;
-      let next = p5.createVector(start.x+xChange, start.y+yChange);
-      rock.push(next);
-      //bottom right point
-      xChange = p5.random(-rockOffset,rockOffset);
-      yChange = p5.random(minSize, maxSize);
-      next = p5.createVector(next.x+xChange,next.y+yChange);
-      if(next.y > lowestPoint){
-        lowestPoint = next.y;
-      }
-      rock.push(next);
-      //bottom left point
-      xChange = p5.random(-maxSize, -minSize);
-      yChange = p5.random(0, rockOffset);
-      start.x += xChange;
-      start.y += yChange;
-      next = p5.createVector(next.x+xChange, next.y+yChange);
-      if(next.y > lowestPoint){
-        lowestPoint = next.y;
-      }
-      rock.push(next);
-      let rockMap = new Map();
-      rockMap.set('lowestPoint', Math.trunc(lowestPoint));
-      rockMap.set('rock', rock);
-      allRocks.push(rockMap);
-
-      this.allRock.push(rock);
-    }
-    this.rockGroups.set('allRocks',allRocks);
     //draw  
       //rock - sharp or rounded cirlces   
-    for(let i = 0; i < maxRocks; ++i){
+    for(let i = 0; i < this.allRock.length; ++i){
       p5.push();
       this.color = [ 200, 200, 200] //grey
       let offset = 1;
@@ -136,6 +185,7 @@ export default class Ground {
       p5.vertex(this.allRock[i][0].x*offset, this.allRock[i][0].y*offset);
       p5.vertex(this.allRock[i][1].x*offset, this.allRock[i][1].y*offset);
       p5.vertex(this.allRock[i][2].x*offset, this.allRock[i][2].y*offset);
+      
       //vertex(this.allRock[3].x*offset, this.allRock[3].y*offset);
       p5.endShape();
       p5.pop();
@@ -173,7 +223,6 @@ export default class Ground {
     let totalList = listOfSingles.concat(listOfDoubles).concat(listOfTriples);
     let sortedList = this.mergeSort(totalList);
     this.grassGroups.set('bushels', sortedList);
-
     //main issue at the moment is the bushel is not being added as a separate bushel in the allgrass list
   }
   drawGrass(p5){
@@ -205,7 +254,7 @@ export default class Ground {
     let listOfSingles = [];
     let lowestPoint = -1;
     for(let j = 0; j < max; ++j){
-      this.bushel = []
+      let bushel = []
       let subPoint = p5.createVector(p5.random(0, this.w),p5.random((this.h - (this.h*.24)), this.h));
       for(let p = 0; p < pointCount; ++p){
         let xChange = p5.random(xRange[0], xRange[1]);
@@ -223,19 +272,19 @@ export default class Ground {
         let x = Math.trunc(subPoint.x );
         let y =  Math.trunc(subPoint.y );
         let next = p5.createVector(x, y)
-        this.bushel.push(next);
+        bushel.push(next);
       }
       //make sure the height, y-value, is the same for the first and last grass blades.
-      if(this.bushel[0].y > this.bushel[this.bushel.length-1].y){
-        lowestPoint = this.bushel[0].y;
+      if(bushel[0].y > bushel[bushel.length-1].y){
+        lowestPoint = bushel[0].y;
       }
       else{
-        lowestPoint = this.bushel[this.bushel.length-1].y;
+        lowestPoint = bushel[bushel.length-1].y;
       }
       //this.bushel[0].y = this.bushel[0].y.toFixed(2);
 
       //this.allGrass.push(this.bushel);
-      listOfSingles.push(this.bushel);
+      listOfSingles.push(bushel);
     }
     return listOfSingles;
   }
@@ -447,6 +496,35 @@ export default class Ground {
     
     p5.endShape();
   }
+
+  debrisMergeSort(arr){
+    if(arr.length <= 1){
+      return arr;
+    }
+    let mid = Math.floor(arr.length/2);
+    let left = this.debrisMergeSort(arr.slice(0,mid));
+    let right = this.debrisMergeSort(arr.slice(mid));
+    return this.debrisMerge(left, right);
+  }
+  debrisMerge(left, right){
+    let result = [];
+    let i = 0; 
+    let j = 0;
+    while(i < left.length && j < right.length){
+      let leftValue = left[i].get('lowestPoint');
+      let rightValue = right[i].get('lowestPoint');
+      if(leftValue < rightValue){
+        result.push(left[i]);
+        i++;
+      }
+      else{
+        result.push(right[j]);
+        j++;
+      }
+    }
+    return result.concat(left.slice(i)).concat(right.slice(j));
+  }
+
   mergeSort(arr){
     if(arr.length <= 1){
       return arr;
