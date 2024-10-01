@@ -19,8 +19,8 @@ export default class Ground {
     this.grassGroups = new Map();
     this.rockGroups = new Map();
     this.rockGroups.set('allRocks',[]);
-    this.maxBushels = 500;
-    this.maxRocks = this.maxBushels * .03
+    this.maxBushels = 6000;
+    this.maxRocks = this.maxBushels * .003
     this.setupGrass(p5, this.maxBushels);
     this.setupRock(p5, this.maxRocks);
     let temp = this.allRock.concat(this.grassGroups.get('bushels'));
