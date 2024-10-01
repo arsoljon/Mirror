@@ -175,12 +175,12 @@ function setVertices(){
 
   //2nd version
   
-  let maxLines = 100;
+  let maxLines = 50;
 
   for(let j = 0; j < maxLines; ++j){
     //maxSpread is max amount of pixels the set of vertices are allowed to intially cover.
-    let maxSpread = random(50,10);
-    let maxCount = random(5,10);
+    let maxSpread = random(20,40);
+    let maxCount = random(2,5);
     let change = maxSpread/maxCount;
     //set multiple coordinates in diagonal position. 
     let startX = random(0-(w/3),w); 
@@ -231,12 +231,12 @@ function updateVertices(){
 
       currentOff += offsetSpeed;
       let noiseX = noise(currentOff);
-      let changeX = cos(angle) * map(noiseX, 0,1,-span, span);
+      let changeX = cos(angle) * map(noiseX, 0,1,0.5, 0.6);
       currentVec.x += changeX;
-      currentVec.y += ySpeed;
       if(currentVec.y > h+150){
         currentVec.y = 0-h;
       }
+      
       this.allCloudLines[j][i].set('xOffset', currentOff);
       this.allCloudLines[j][i].set('vector',currentVec)
       this.allCloudLines[j][i].set('angle', angle);
@@ -246,15 +246,18 @@ function updateVertices(){
   
 }
 
+let xSpeed = 0.5;
+let ySpeed = 0.1;
 
 function drawLine(){
   //the shape only needs one index curveVertex. the first index is best. 
   updateVertices();
-  push()
+  push();
   noFill();
   
   for(let j = 0; j < this.allCloudLines.length; ++j){
     let allVectors = this.allCloudLines[j];
+    
     push();
     beginShape();
     curveVertex(allVectors[0].get('vector').x, allVectors[0].get('vector').y);
@@ -263,6 +266,12 @@ function drawLine(){
       vertex(allVectors[i].get('vector').x, allVectors[i].get('vector').y);
       let currAlpha = allVectors[i].get('alpha');
       currAlpha += allVectors[i].get('alphaChange');
+      let currX = allVectors[i].get('vector').x
+      let currY = allVectors[i].get('vector').y
+      currX += xSpeed;
+      currY += ySpeed;
+      let next = createVector(currX, currY);
+      allVectors[i].set('vector',next);
       if(currAlpha>255){
         let currChange = allVectors[i].get('alphaChange');
         currChange *= -1;
@@ -286,7 +295,7 @@ function resetLine(){
   //alpha begins at 0;
   //maxSpread is max amount of pixels the set of vertices are allowed to intially cover.
   let maxSpread = random(50,150);
-  let maxCount = random(5,10);
+    let maxCount = random(2,10);
   let change = maxSpread/maxCount;
   //set multiple coordinates in diagonal position. 
     let startX = random(0-(w/3),w); 
@@ -317,38 +326,5 @@ function resetLine(){
     //this.allVertices.push(vertexMap);
   }
   return newLine;
-}
-function drawVertices(){
-  let speed = .7;
-  let offsetSpeed = 0.007;
-  for(let i = 0; i < this.allVertices.length; ++i){
-    let coord = this.allVertices[i].get('vector');
-    let xOffset = this.allVertices[i].get('xOffset');
-    let yOffset = this.allVertices[i].get('yOffset');
-    xOffset += offsetSpeed;
-    yOffset += 0.1;
-    coord.y += speed;
-    coord.x += speed;
-
-    let noiseX = noise(xOffset);
-    let noiseY = noise(yOffset);
-    let xc = map(noiseX, 0,1,-.001,.001);
-    let yc = map(noiseX, 0,1,0,10);
-    push();
-    strokeWeight(5);
-    translate(coord.x,coord.y);
-    point(0,0);
-    if(coord.y > h ){
-      coord.y = 0;
-      coord.x = 0;
-      let next = createVector(coord.x,coord.y)
-      this.allVertices[i].set('vector',next);
-    }
-    this.allVertices[i].set('xOffset',xOffset)
-    this.allVertices[i].set('yOffset',yOffset)
-    let next = createVector(coord.x, coord.y)
-    this.allVertices[i].set('vector', next);
-    pop();
-  }
 }
 */
