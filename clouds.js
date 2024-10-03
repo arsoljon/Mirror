@@ -175,16 +175,22 @@ function setVertices(){
 
   //2nd version
   
-  let maxLines = 50;
+  let maxLines = 400;
+  let edgeLength = 0;      //space between points on a single line
+  let spread = [20,100]
 
   for(let j = 0; j < maxLines; ++j){
     //maxSpread is max amount of pixels the set of vertices are allowed to intially cover.
-    let maxSpread = random(20,40);
+    let maxSpread = random(spread[0],spread[1]);
     let maxCount = random(2,5);
     let change = maxSpread/maxCount;
     //set multiple coordinates in diagonal position. 
-    let startX = random(0-(w/3),w); 
-    let startY = random(-50, minHeight-maxSpread);
+    let minX = 0-(w/3);
+    let maxX = w
+    let startX = random(minX,maxX); 
+    let minY = -50;
+    let maxY = minHeight-maxSpread;
+    let startY = random(minY, maxY);
     let vertices = []
     let shapeFill = [101, 101, 98]
     let shapeAlpha = random(0,255);
@@ -193,7 +199,7 @@ function setVertices(){
       let next = createVector(startX, startY);
       //the starting position of x should already be in a random position 
       //this avoids waiting for the clouds to get in a decent position. at start of scene.
-      next.x = random(next.x-100, next.x+100);
+      next.x = random(next.x-edgeLength, next.x+edgeLength);
       startX += change;
       startY += change;
       let xOffset = random(0,50);
@@ -216,8 +222,12 @@ function setVertices(){
 
 function updateVertices(){
   let ySpeed = 0;
-  let offsetSpeed = 0.007;
-  let span = 1
+  let offsetSpeed = 20;
+  let span = 0
+  let defaultAngleSpeed = 0.03;
+  //min/max of the speed of undulations of lines
+  let maxX = 0.2; 
+  let minX = 0.1;
 
   
   //2nd version update
@@ -226,16 +236,14 @@ function updateVertices(){
       let currentVec = this.allCloudLines[j][i].get('vector');
       let currentOff = this.allCloudLines[j][i].get('xOffset');
       let angle = this.allCloudLines[j][i].get('angle');
-      let angleSpeed = 0.005  // Speed of the oscillation
+      let angleSpeed = defaultAngleSpeed  // Speed of the oscillation
       angle += angleSpeed;
 
       currentOff += offsetSpeed;
-      let noiseX = noise(currentOff);
-      let changeX = cos(angle) * map(noiseX, 0,1,0.5, 0.6);
+      let noiseX = noise(1);
+      let changeX = cos(angle) * map(noiseX, 0,1,0, maxX);
       currentVec.x += changeX;
-      if(currentVec.y > h+150){
-        currentVec.y = 0-h;
-      }
+
       
       this.allCloudLines[j][i].set('xOffset', currentOff);
       this.allCloudLines[j][i].set('vector',currentVec)
@@ -248,7 +256,6 @@ function updateVertices(){
 
 let xSpeed = 0.5;
 let ySpeed = 0.1;
-
 function drawLine(){
   //the shape only needs one index curveVertex. the first index is best. 
   updateVertices();
@@ -278,8 +285,14 @@ function drawLine(){
         allVectors[i].set('alphaChange',currChange);
       }
       allVectors[i].set('alpha',currAlpha);
+      //reset the lines if it fades out
       if(allVectors[i].get('alpha') < -100){
         allVectors = resetLine();
+      }
+      //reset the lines if passed the min height
+      if(allVectors[allVectors.length-1].get('vector').y > minHeight){
+        //decrease alpha faster than normal
+        allVectors[i].set('alphaChange',-3);
       }
     }
     endShape();
@@ -294,8 +307,9 @@ function drawLine(){
 function resetLine(){
   //alpha begins at 0;
   //maxSpread is max amount of pixels the set of vertices are allowed to intially cover.
-  let maxSpread = random(50,150);
-    let maxCount = random(2,10);
+  let spread = [20,100]
+  let maxSpread = random(spread[0],spread[1]);
+  let maxCount = random(2,10);
   let change = maxSpread/maxCount;
   //set multiple coordinates in diagonal position. 
     let startX = random(0-(w/3),w); 
@@ -304,11 +318,12 @@ function resetLine(){
   let shapeFill = [101, 101, 98]
   let shapeAlpha = 0;
   let alphaChange = random(0.2,2);
+  let edgeLength = 1;      //space between points on a single line
   for(let i = 0; i < maxCount; ++i){
     let next = createVector(startX, startY);
     //the starting position of x should already be in a random position 
     //this avoids waiting for the clouds to get in a decent position. at start of scene.
-    next.x = random(next.x-100, next.x+100);
+    next.x = random(next.x-edgeLength, next.x+edgeLength);
     startX += change;
     startY += change;
     let xOffset = random(0,50);
