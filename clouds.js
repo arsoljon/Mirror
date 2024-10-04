@@ -343,3 +343,76 @@ function resetLine(){
   return newLine;
 }
 */
+//-----------------------------------------
+//-----------------------------------------
+//-----------------------------------------
+//creates a wave and a dot that follows the path of the wave. 
+/*
+let wavePoints = []; // Array to store points of the wavy line
+let dotSize = 10;    // Size of the dot
+let t = 0;           // Parameter to track position along the curve
+let speed = 0.0005;   // Speed of the dot (adjust this value to control how fast the dot moves)
+
+function setup() {
+  createCanvas(800, 400);
+  
+  // Pre-calculate the wavy line points (shortened by half)
+  for (let x = 0; x <= width; x += 100) { // Change from 50 to 100 to shorten the line
+    let y = height / 2 + random(-50, 50); // Random y offset to create the wave
+    wavePoints.push(createVector(x, y));  // Store each point in the array
+  }
+}
+
+function draw() {
+  background(220);
+  
+  noFill();
+  stroke(0);
+  strokeWeight(2);
+  
+  // Draw the pre-constructed wavy line
+  beginShape();
+  for (let point of wavePoints) {
+    curveVertex(point.x, point.y); // Use curveVertex for a smoother curve
+  }
+  endShape();
+  
+  // Draw the moving dot along the curve
+  noStroke(); // Remove stroke for the dot
+  fill(255, 0, 0); // Set the dot color to red
+
+  // Calculate the total number of control points
+  let numPoints = wavePoints.length;
+
+  // Use the modulus operator to keep t within the length of the curve
+  let currentIndex = floor(t * (numPoints - 1)); // Calculate the current index based on t
+  let nextIndex = currentIndex + 1; // Get the next index
+  nextIndex = constrain(nextIndex, 0, numPoints - 1); // Ensure we stay within bounds
+
+  // Calculate the position of the dot using curvePoint
+  let dotX = curvePoint(
+    wavePoints[max(0, currentIndex)].x, 
+    wavePoints[min(numPoints - 1, nextIndex)].x, 
+    wavePoints[min(numPoints - 1, nextIndex + 1)].x, 
+    wavePoints[min(numPoints - 1, nextIndex + 2)].x, 
+    t * (numPoints - 1) % 1 // Fractional part for interpolation
+  );
+
+  let dotY = curvePoint(
+    wavePoints[max(0, currentIndex)].y, 
+    wavePoints[min(numPoints - 1, nextIndex)].y, 
+    wavePoints[min(numPoints - 1, nextIndex + 1)].y, 
+    wavePoints[min(numPoints - 1, nextIndex + 2)].y, 
+    t * (numPoints - 1) % 1 // Fractional part for interpolation
+  );
+
+  // Draw the dot
+  ellipse(dotX, dotY, dotSize, dotSize); // Draw the dot at the current position
+
+  // Increment t to move the dot along the curve
+  t += speed;
+  if (t > 1) {
+    t = 0; // Reset t to loop the dot movement
+  }
+}
+*/
